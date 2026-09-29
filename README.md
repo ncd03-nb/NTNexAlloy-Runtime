@@ -4,9 +4,10 @@ Open-source Android framework adapter for loading a pinned NexAlloy XES payload 
 `/system/framework/framework.jar`, without requiring an LSPosed manager or root service at
 runtime.
 
-This repository contains only the NothingsVN runtime adapter and integration documentation. It
-does **not** contain NexAlloy's APK, native libraries, patches, or other upstream binaries. Obtain
-those artifacts from the upstream projects and comply with their licenses.
+This repository contains the NothingsVN runtime adapter, the standalone NexAlloy XES controller
+app, and integration documentation. It does **not** contain NexAlloy's hook payload, native
+libraries, patches, or other upstream binaries. Obtain those artifacts from the upstream projects
+and comply with their licenses.
 
 ## Upstream projects and authors
 
@@ -25,6 +26,8 @@ See [NOTICE.md](NOTICE.md) for detailed attribution and licensing boundaries.
 
 - `NexAlloyRuntime.java`: process filter, per-app switches, payload extraction, class-loader setup,
   native loader invocation, and Xposed callback bridge.
+- `controller-app/`: standalone `com.hma.nexalloy` Android app that owns the global and per-app
+  runtime controls formerly hosted by NT Manager.
 - `scripts/export-smali.sh`: reproducible Java → DEX → smali export for ROM toolbuilds.
 - `docs/INTEGRATION.md`: framework and payload layout contract.
 - `metadata/payload-manifest.sha256`: hashes of the tested pinned payload, without redistributing
@@ -53,6 +56,27 @@ The generated file is written to:
 
 ```text
 build/smali/android/security/ntmanager/NexAlloyRuntime.smali
+```
+
+## Build the standalone controller
+
+The controller targets Android 13+ and must be installed as a privileged system app to write the
+shared `Settings.Global` contract without a development-time ADB grant.
+
+```powershell
+cd controller-app
+$env:HMA_KEYSTORE_PATH = "C:\path\to\release.jks"
+$env:HMA_KEYSTORE_PASSWORD = "..."
+$env:HMA_KEY_ALIAS = "..."
+$env:HMA_KEY_PASSWORD = "..."
+.\gradlew.bat clean :app:assembleRelease --no-daemon
+```
+
+ROM placement:
+
+```text
+/system/priv-app/NexAlloyXES/NexAlloyXES.apk
+/system/etc/permissions/com.hma.nexalloy.xml
 ```
 
 ## Important

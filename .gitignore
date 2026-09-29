@@ -2,3 +2,5 @@
 /tools/*.jar
 *.iml
 .idea/
+controller-app/.gradle/
+controller-app/app/build/

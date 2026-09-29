@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NexAlloy XES</string>
+    <string name="master">Bật NexAlloy XES</string>
+    <string name="master_sub">Áp dụng bản vá trực tiếp từ framework ROM, không cần LSPosed</string>
+    <string name="supported_apps">Ứng dụng được hỗ trợ</string>
+    <string name="installed">Đã cài</string>
+    <string name="not_installed">Chưa cài</string>
+    <string name="download">Tải xuống</string>
+    <string name="write_failed">Không thể cập nhật cấu hình framework. Hãy cài NexAlloy XES dưới dạng ứng dụng hệ thống đặc quyền.</string>
+</resources>

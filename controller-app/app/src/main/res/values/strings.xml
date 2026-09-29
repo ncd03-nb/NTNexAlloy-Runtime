@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NexAlloy XES</string>
+    <string name="master">Enable NexAlloy XES</string>
+    <string name="master_sub">Apply patches directly from the ROM framework, without LSPosed</string>
+    <string name="supported_apps">Supported apps</string>
+    <string name="installed">Installed</string>
+    <string name="not_installed">Not installed</string>
+    <string name="download">Download</string>
+    <string name="write_failed">Cannot update framework settings. Install NexAlloy XES as a privileged system app.</string>
+</resources>
