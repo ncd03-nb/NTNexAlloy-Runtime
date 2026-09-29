@@ -19,6 +19,12 @@ ntmanager/armeabi-v7a/libdexkit.so
 The runtime extracts the ABI-specific files into the target application's cache directory and
 loads the payload with Android's `DelegateLastClassLoader`.
 
+The embedded legacy Xposed API shim must expose
+`XC_MethodHook.MethodHookParam.getObjectExtra(String)` and
+`setObjectExtra(String, Object)`. Facebook hooks use these methods to carry state from the before
+callback to the after callback. When the payload changes, increment `PAYLOAD_VERSION` even if the
+upstream APK versionCode is unchanged; otherwise existing app caches keep the previous payload.
+
 ## Initialization
 
 Call the runtime after a valid application `Context` is available:

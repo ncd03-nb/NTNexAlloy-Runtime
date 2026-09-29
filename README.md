@@ -36,7 +36,7 @@ See [NOTICE.md](NOTICE.md) for detailed attribution and licensing boundaries.
 ## Current compatibility snapshot
 
 - Upstream fork release tag: `v1.0`
-- Payload version: `2.0.109` (`versionCode 109`)
+- Payload version: `2.0.109-compat1` (`versionCode 109`, Xposed callback-extra compatibility)
 - Runtime API: `1`
 - Android framework target: API 37
 - Architectures: `arm64-v8a`, `armeabi-v7a`

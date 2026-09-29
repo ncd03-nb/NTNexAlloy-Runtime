@@ -35,7 +35,7 @@ public final class NexAlloyRuntime {
     private static final String TAG = "NTNexAlloy";
     private static final String FRAMEWORK = "/system/framework/framework.jar";
     private static final String PAYLOAD_ENTRY = "ntmanager/NTNexAlloy.apk";
-    private static final String PAYLOAD_VERSION = "2.0.109";
+    private static final String PAYLOAD_VERSION = "2.0.109-compat1";
     private static final String RUNTIME_DIR = "ntnexalloy-" + PAYLOAD_VERSION;
     private static final String APP_SETTINGS_PREFIX = "nt_nexalloy_app_";
 
