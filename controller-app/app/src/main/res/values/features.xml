@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_01bdcdd22652df88_title" formatted="false">Block screenshot detection</string>
+    <string name="feature_05da93fe49ae4f7f_title" formatted="false">Disable Shorts resuming on startup</string>
+    <string name="feature_0a6ace71917baef8_title" formatted="false">Hide message ads</string>
+    <string name="feature_0bd2b26eeb2b2a2e_title" formatted="false">Hide ads</string>
+    <string name="feature_0e61d18c0654c947_title" formatted="false">Filter Discover ads</string>
+    <string name="feature_135c49a8bfd9a55a_title" formatted="false">Swipe controls</string>
+    <string name="feature_13f1f144af732b83_title" formatted="false">Force enable translate</string>
+    <string name="feature_14ab343e54fd4267_title" formatted="false">Disable telemetry</string>
+    <string name="feature_1503802c3a07f7fe_title" formatted="false">Sanitize tracking links</string>
+    <string name="feature_15a95f62f956ab39_title" formatted="false">Disable analytics</string>
+    <string name="feature_1da911138bba51d6_title" formatted="false">Disable Firebase Analytics</string>
+    <string name="feature_1f5ede4eb721d277_title" formatted="false">Save instants</string>
+    <string name="feature_1f861fe81d1c713c_title" formatted="false">Skip splash ads</string>
+    <string name="feature_20d3118318349208_title" formatted="false">Remove ads</string>
+    <string name="feature_22b599c334bee283_title" formatted="false">Download profile pictures</string>
+    <string name="feature_26b0a7dd69a1972f_title" formatted="false">Disable Adtima offline ads and tracking</string>
+    <string name="feature_26f3c86f06ad7cd0_title" formatted="false">Show poll results</string>
+    <string name="feature_2d21bf3965d222bf_title" formatted="false">Unlock subscription features</string>
+    <string name="feature_32a11d6dc4741cb4_title" formatted="false">Download stories</string>
+    <string name="feature_33edbb04dc9774bd_title" formatted="false">Ghost permanent view</string>
+    <string name="feature_3a78e3bf922d1f4a_title" formatted="false">Block Adtima video ad requests</string>
+    <string name="feature_3ace5d17876792e3_title" formatted="false">Ghost view story</string>
+    <string name="feature_3b4927a25b4c6865_title" formatted="false">Remove feed ads</string>
+    <string name="feature_3c9f71e1b4f4cc11_title" formatted="false">Disable Crashlytics crash reporting</string>
+    <string name="feature_3d98ae41b8c85042_title" formatted="false">Auto captions</string>
+    <string name="feature_42639ef743177769_title" formatted="false">Bypass image region restrictions</string>
+    <string name="feature_43e4efcb1e57753f_title" formatted="false">Disable analytics database</string>
+    <string name="feature_440b7026f1b5b5e7_title" formatted="false">Disable sponsored placements</string>
+    <string name="feature_45ae2371d9d4409e_title" formatted="false">Remove delay</string>
+    <string name="feature_45ecbd6aa96b9433_title" formatted="false">SponsorBlock</string>
+    <string name="feature_468ab769c500f30d_title" formatted="false">Hide paid partnerships</string>
+    <string name="feature_4a93b000f164ad4d_title" formatted="false">Hide story ads</string>
+    <string name="feature_4afac5539f44ea9e_title" formatted="false">Screenshot permission</string>
+    <string name="feature_592cb29e2edfc1d5_title" formatted="false">Disable video codecs</string>
+    <string name="feature_601921686bc0b8aa_title" formatted="false">Sort downloads into username folders</string>
+    <string name="feature_6225a1943362eab2_title" formatted="false">Hide Shorts components</string>
+    <string name="feature_62765b401d20adaa_title" formatted="false">Remove premium upsell</string>
+    <string name="feature_6429b81ab47d7db9_title" formatted="false">Disable consent popup</string>
+    <string name="feature_65b6155eb20fc446_title" formatted="false">Disable screen capture detection</string>
+    <string name="feature_6610521c8807e4e0_title" formatted="false">Prefer original photo quality</string>
+    <string name="feature_67862d074b2c8280_title" formatted="false">Hide Banner</string>
+    <string name="feature_67cd03f77783537b_title" formatted="false">Hide Facebook ads</string>
+    <string name="feature_69fa9866afa7bce1_title" formatted="false">Disable Advertising ID</string>
+    <string name="feature_6a6a85cc5da7708a_title" formatted="false">Copy video link</string>
+    <string name="feature_7032d3fa06981766_title" formatted="false">Hide upgrade button</string>
+    <string name="feature_7136044b85070174_title" formatted="false">Enable exclusive audio playback</string>
+    <string name="feature_72519bdb075cc2d6_title" formatted="false">Keep expired media accessible</string>
+    <string name="feature_72cf385602451286_title" formatted="false">Force original audio</string>
+    <string name="feature_732e8698b49149fd_title" formatted="false">Allow screenshots &amp; recording</string>
+    <string name="feature_74aa6c46bc2c0918_title" formatted="false">Hide promoted-music videos</string>
+    <string name="feature_75086e373a1b5e4c_title" formatted="false">Hide recommendation items</string>
+    <string name="feature_77a7c94235c48bed_title" formatted="false">Enable debugging</string>
+    <string name="feature_7ccda72b7bb010e2_title" formatted="false">Sanitize sharing links</string>
+    <string name="feature_7f73546ad1ccb219_title" formatted="false">Remove Google ad networks from Adtima</string>
+    <string name="feature_82a2aec7ed6fae6e_title" formatted="false">Spoof ad-free session</string>
+    <string name="feature_8314196f06a898d2_title" formatted="false">Disable ads tracking</string>
+    <string name="feature_8423baa5c94e4b60_title" formatted="false">Disable typing status</string>
+    <string name="feature_879d2b00ed5f522c_title" formatted="false">View live anonymously</string>
+    <string name="feature_88b6acc28fa92296_title" formatted="false">Change start page</string>
+    <string name="feature_8efdfc940b20c35d_title" formatted="false">Hide Zalo Video ads</string>
+    <string name="feature_960e5f48fe10e6f0_title" formatted="false">Block typing status</string>
+    <string name="feature_96f387e57f10a304_title" formatted="false">Ghost interceptor</string>
+    <string name="feature_97979f37569941e5_title" formatted="false">Copy media link</string>
+    <string name="feature_98c7f577e28bf5e7_title" formatted="false">Remove download watermark</string>
+    <string name="feature_9b2d700b942dc77d_title" formatted="false">Always allow Google Drive photo backup</string>
+    <string name="feature_a71ad34a99057fb6_title" formatted="false">Hide profile timeline ads</string>
+    <string name="feature_a800a238a054c629_title" formatted="false">View stories without marking seen</string>
+    <string name="feature_aa3adcb8a653576c_title" formatted="false">Hide layout components</string>
+    <string name="feature_ac7a41bf420611fc_title" formatted="false">Download posts</string>
+    <string name="feature_acb9381ae04f0e7c_title" formatted="false">Save deleted messages</string>
+    <string name="feature_acf3209f6b456c6a_title" formatted="false">Start as guest</string>
+    <string name="feature_afec2b22114c05f1_title" formatted="false">Playback speed</string>
+    <string name="feature_b44c92db3ec5dfa5_title" formatted="false">Hide CAPTCHA popups</string>
+    <string name="feature_b7423260493ab111_title" formatted="false">Unlock VPN Plus</string>
+    <string name="feature_b8c237eb0d10bc61_title" formatted="false">Video quality</string>
+    <string name="feature_b914361360a3723d_title" formatted="false">Auto-record call audio</string>
+    <string name="feature_bf03f22daa9aea5d_title" formatted="false">Fix Google login</string>
+    <string name="feature_bfa48cc5b1675cad_title" formatted="false">Add a timestamp to download filenames</string>
+    <string name="feature_c04b8390e5ae9322_title" formatted="false">No shortened URL</string>
+    <string name="feature_c1326bc65323945a_title" formatted="false">Block Adtima ad requests</string>
+    <string name="feature_c13547399f969ba7_title" formatted="false">Hide video action buttons</string>
+    <string name="feature_c1f02ade9d4bd30e_title" formatted="false">Remove background playback restrictions</string>
+    <string name="feature_c39136e2b57c96f9_title" formatted="false">Upload instants from gallery</string>
+    <string name="feature_c3ce4002050158a1_title" formatted="false">Opt out of Adtima ad tracking</string>
+    <string name="feature_c43e2efacbb5e836_title" formatted="false">Unwrap l.php redirect links</string>
+    <string name="feature_caf89604e68b6cdf_title" formatted="false">Ghost ephemeral keep</string>
+    <string name="feature_cfb6374711a4e095_title" formatted="false">Disable blur effects</string>
+    <string name="feature_ch_protonvpn_android_14ab343e54fd4267_description" formatted="false">Blocks all telemetry, analytics, and observability data collection.</string>
+    <string name="feature_ch_protonvpn_android_45ae2371d9d4409e_description" formatted="false">Removes the imposed delay when changing VPN servers.</string>
+    <string name="feature_ch_protonvpn_android_b7423260493ab111_description" formatted="false">Spoofs the highest plan tier for all UI unlocks, while routing connections through free servers for server-side compatibility. Also skips the upgrade onboarding dialog after login.</string>
+    <string name="feature_com_alltrails_alltrails_f32b006cf82a6be2_description" formatted="false">Enables app features locked behind the subscription paywall.</string>
+    <string name="feature_com_facebook_katana_01bdcdd22652df88_description" formatted="false">Stops Facebook from detecting screenshots and screen recordings.</string>
+    <string name="feature_com_facebook_katana_67cd03f77783537b_description" formatted="false">Removes sponsored feed stories, Reels ads, game ads, and banner ads.</string>
+    <string name="feature_com_facebook_katana_732e8698b49149fd_description" formatted="false">Removes FLAG_SECURE so screenshots and screen recordings work everywhere in Facebook.</string>
+    <string name="feature_com_facebook_katana_82a2aec7ed6fae6e_description" formatted="false">Makes Facebook believe an ad-free session is active, so the server stops sending sponsored content (including sponsored Stories tray circles).</string>
+    <string name="feature_com_facebook_katana_a71ad34a99057fb6_description" formatted="false">Removes sponsored posts from profile pages by checking for an advertisement\'s tracking id. Posts without one are left alone.</string>
+    <string name="feature_com_facebook_katana_a800a238a054c629_description" formatted="false">Stops the story viewer from reporting stories as seen, so the owner does not see you in the viewer list.</string>
+    <string name="feature_com_facebook_katana_c43e2efacbb5e836_description" formatted="false">Opens the real destination of Facebook\'s l.php redirect links, without fbclid tracking.</string>
+    <string name="feature_com_facebook_katana_d1c189d3032ecd6b_description" formatted="false">Removes sponsored results from Facebook search, identified by the result\'s own advertisement type. Organic results are left untouched.</string>
+    <string name="feature_com_facebook_katana_d80eb6de80b3b1b8_description" formatted="false">Broad upstream hooks: ad-break state machine and banner-ad boolean sweep. May break some screens; off by default.</string>
+    <string name="feature_com_facebook_katana_db5dc7701e30e1d1_description" formatted="false">Removes mid-roll ad breaks and the docked sponsored card from videos and live replays.</string>
+    <string name="feature_com_facebook_orca_0bd2b26eeb2b2a2e_description" formatted="false">Filters sponsored InboxAdsItem rows from Messenger inbox lists.</string>
+    <string name="feature_com_facebook_orca_8423baa5c94e4b60_description" formatted="false">Forces outgoing typing state to stopped without cancelling the mailbox callback.</string>
+    <string name="feature_com_facebook_orca_eba5226810e72065_description" formatted="false">Stops outgoing read dispatch while retaining the local inbox update and notification handling.</string>
+    <string name="feature_com_google_android_apps_youtube_music_0bd2b26eeb2b2a2e_description" formatted="false">Adds options to hide fullscreen ads, Premium promotions and video ads.</string>
+    <string name="feature_com_google_android_apps_youtube_music_7032d3fa06981766_description" formatted="false">Hides the upgrade tab from the pivot bar.</string>
+    <string name="feature_com_google_android_apps_youtube_music_7136044b85070174_description" formatted="false">Enables the option to play audio without video.</string>
+    <string name="feature_com_google_android_apps_youtube_music_77a7c94235c48bed_description" formatted="false">Adds options for debugging and exporting Morphe logs to the clipboard.</string>
+    <string name="feature_com_google_android_apps_youtube_music_7ccda72b7bb010e2_description" formatted="false">Removes the tracking query parameters from shared links.</string>
+    <string name="feature_com_google_android_apps_youtube_music_c1f02ade9d4bd30e_description" formatted="false">Removes restrictions on background playback, including playing kids videos in the background.</string>
+    <string name="feature_com_google_android_gm_0bd2b26eeb2b2a2e_description" formatted="false">Removes the sponsored rows Gmail renders between conversations.</string>
+    <string name="feature_com_google_android_googlequicksearchbox_0e61d18c0654c947_description" formatted="false">Filters promoted ad cards from the Google Discover feed.</string>
+    <string name="feature_com_google_android_youtube_05da93fe49ae4f7f_description" formatted="false">Adds an option to disable Shorts from resuming on app startup when Shorts were last being watched.</string>
+    <string name="feature_com_google_android_youtube_0bd2b26eeb2b2a2e_description" formatted="false">Adds options to hide general ads, Premium promotions and video ads.</string>
+    <string name="feature_com_google_android_youtube_135c49a8bfd9a55a_description" formatted="false">Adds options to enable and configure volume and brightness swipe controls.</string>
+    <string name="feature_com_google_android_youtube_3d98ae41b8c85042_description" formatted="false">Adds an option to disable captions from being automatically enabled.</string>
+    <string name="feature_com_google_android_youtube_42639ef743177769_description" formatted="false">Adds an option to use a different host for user avatar and channel images and can fix missing images that are blocked in some countries.</string>
+    <string name="feature_com_google_android_youtube_45ecbd6aa96b9433_description" formatted="false">Adds options to enable and configure SponsorBlock, which can skip undesired video segments such as sponsored content.</string>
+    <string name="feature_com_google_android_youtube_592cb29e2edfc1d5_description" formatted="false">Adds options to disable or force HDR, and to disable VP9 codecs.</string>
+    <string name="feature_com_google_android_youtube_6225a1943362eab2_description" formatted="false">Adds options to hide components related to Shorts.</string>
+    <string name="feature_com_google_android_youtube_6a6a85cc5da7708a_description" formatted="false">Adds options to display buttons in the video player to copy video links.</string>
+    <string name="feature_com_google_android_youtube_72cf385602451286_description" formatted="false">Adds an option to always use the original audio track.</string>
+    <string name="feature_com_google_android_youtube_77a7c94235c48bed_description" formatted="false">Adds options for debugging and exporting Morphe logs to the clipboard.</string>
+    <string name="feature_com_google_android_youtube_7ccda72b7bb010e2_description" formatted="false">Removes the tracking query parameters from shared links.</string>
+    <string name="feature_com_google_android_youtube_88b6acc28fa92296_description" formatted="false">Adds an option to set which page the app opens in instead of the homepage.</string>
+    <string name="feature_com_google_android_youtube_aa3adcb8a653576c_description" formatted="false">Adds options to hide general layout components.</string>
+    <string name="feature_com_google_android_youtube_afec2b22114c05f1_description" formatted="false">Adds options to customize available playback speeds, set a default playback speed, and show a speed dialog button in the video player.</string>
+    <string name="feature_com_google_android_youtube_b8c237eb0d10bc61_description" formatted="false">Adds options to set default video qualities and always use the advanced video quality menu.</string>
+    <string name="feature_com_google_android_youtube_c13547399f969ba7_description" formatted="false">Adds options to hide video action buttons in fullscreen and portrait modes.</string>
+    <string name="feature_com_google_android_youtube_c1f02ade9d4bd30e_description" formatted="false">Removes restrictions on background playback, including playing kids videos in the background.</string>
+    <string name="feature_com_google_android_youtube_d5fdc1af021e2d36_description" formatted="false">Adds support to download videos with an external downloader app using the in-app download button or a video player action button.</string>
+    <string name="feature_com_google_android_youtube_eaec66e75461e787_description" formatted="false">Adds options to replace video thumbnails using the DeArrow API or image captures from the video.</string>
+    <string name="feature_com_google_android_youtube_f7e371da0073f6a9_description" formatted="false">Adds options to hide and change the bottom navigation bar (such as the Shorts button) and the upper navigation toolbar.</string>
+    <string name="feature_com_instagram_android_0bd2b26eeb2b2a2e_description" formatted="false">Hides injected ads, sponsored content, paid partnership, and Reels/Stories ads.</string>
+    <string name="feature_com_instagram_android_1503802c3a07f7fe_description" formatted="false">Removes tracking parameters from Instagram links when copying.</string>
+    <string name="feature_com_instagram_android_1f5ede4eb721d277_description" formatted="false">Long-press a received instant (quicksnap) in a direct message to save it.</string>
+    <string name="feature_com_instagram_android_22b599c334bee283_description" formatted="false">Adds a Download entry when a profile picture is opened, saving the full-resolution image rather than the cropped thumbnail.</string>
+    <string name="feature_com_instagram_android_32a11d6dc4741cb4_description" formatted="false">Adds a download button to the story viewer. A story with music offers the video and the still photo separately, since the photo has no soundtrack to strip.</string>
+    <string name="feature_com_instagram_android_33edbb04dc9774bd_description" formatted="false">Makes unexpired view-once and replayable media permanently accessible.</string>
+    <string name="feature_com_instagram_android_3ace5d17876792e3_description" formatted="false">Prevents story seen notifications from being sent to the uploader.</string>
+    <string name="feature_com_instagram_android_4afac5539f44ea9e_description" formatted="false">Allows screenshots in DMs, stories, and reels by removing FLAG_SECURE.</string>
+    <string name="feature_com_instagram_android_601921686bc0b8aa_description" formatted="false">Saves each file into a sub-folder named after the account it came from, instead of dropping everything into one folder.</string>
+    <string name="feature_com_instagram_android_879d2b00ed5f522c_description" formatted="false">Prevents Instagram from knowing you viewed a live stream by blocking the heartbeat/viewer-count endpoint.</string>
+    <string name="feature_com_instagram_android_96f387e57f10a304_description" formatted="false">Blocks ghost mode network requests via TigonServiceLayer (screenshot, view once, story seen).</string>
+    <string name="feature_com_instagram_android_97979f37569941e5_description" formatted="false">Adds a Copy link entry beside Download in the post and reel menus, which copies the direct CDN URL of the media.</string>
+    <string name="feature_com_instagram_android_ac7a41bf420611fc_description" formatted="false">Adds a Download entry to the three-dots menu on a post. Carousels open a sheet to save the current slide or every slide at once.</string>
+    <string name="feature_com_instagram_android_acb9381ae04f0e7c_description" formatted="false">Keeps direct messages visible after the person who sent them unsends. Blocks Instagram from dropping the message from the conversation and from deleting it locally. Unsending your own messages still works.</string>
+    <string name="feature_com_instagram_android_bfa48cc5b1675cad_description" formatted="false">Appends the date and time to every saved filename, so saving the same post twice keeps both copies.</string>
+    <string name="feature_com_instagram_android_c39136e2b57c96f9_description" formatted="false">Adds a chip to the instant camera that sends a picture from the gallery instead of one taken right then.</string>
+    <string name="feature_com_instagram_android_caf89604e68b6cdf_description" formatted="false">Prevents vanish/ephemeral (disappearing) messages from being deleted locally.</string>
+    <string name="feature_com_instagram_android_de87b57aa7f7e457_description" formatted="false">Adds a Download entry to the reel overflow menu. Reels whose video and audio arrive as separate streams are merged before saving.</string>
+    <string name="feature_com_instagram_android_e33c325c6be50d46_description" formatted="false">Blocks screenshot notification from being sent to the other party.</string>
+    <string name="feature_com_instagram_android_e73edad01f00211d_description" formatted="false">Blocks typing indicator from being sent to the other party.</string>
+    <string name="feature_com_instagram_android_e99123e2f3525171_description" formatted="false">Blocks DM read receipts from being sent. Chats you open still show as read on your phone.</string>
+    <string name="feature_com_instagram_android_eb92779edb37c484_description" formatted="false">Blocks ads and analytics network requests for Feed, Reels, Stories, and Explore.</string>
+    <string name="feature_com_instagram_barcelona_0bd2b26eeb2b2a2e_description" formatted="false">Hides injected ads, sponsored content, and paid partnership posts in Threads feed.</string>
+    <string name="feature_com_instagram_barcelona_1503802c3a07f7fe_description" formatted="false">Removes tracking parameters from Threads links when copying.</string>
+    <string name="feature_com_instagram_barcelona_eb92779edb37c484_description" formatted="false">Blocks ads and analytics network requests.</string>
+    <string name="feature_com_microblink_photomath_df7533ab7e4f01a0_description" formatted="false"></string>
+    <string name="feature_com_reddit_frontpage_0bd2b26eeb2b2a2e_description" formatted="false">Adds options to hide ads.</string>
+    <string name="feature_com_reddit_frontpage_7ccda72b7bb010e2_description" formatted="false">Adds an option to sanitize sharing links by removing tracking query parameters.</string>
+    <string name="feature_com_reddit_frontpage_acf3209f6b456c6a_description" formatted="false">Skips the forced startup login screen using Reddit\'s native guest browsing mode.</string>
+    <string name="feature_com_soundcloud_android_15a95f62f956ab39_description" formatted="false">Disables SoundCloud\'s analytics.</string>
+    <string name="feature_com_soundcloud_android_6429b81ab47d7db9_description" formatted="false">Disables the OneTrust consent/cookies popup and collapses banner views.</string>
+    <string name="feature_com_soundcloud_android_d35b35bac7f89cfd_description" formatted="false">Enables SoundCloud Go+ premium features, offline listening, HQ audio, and disables audio/visual ads.</string>
+    <string name="feature_com_ss_android_ugc_trill_14ab343e54fd4267_description" formatted="false">Stops ByteDance AppLog analytics, AppsFlyer attribution, Firebase screen reports and the Npth/MonitorCrash crash reporters. The For You feed then no longer learns from what you watch.</string>
+    <string name="feature_com_ss_android_ugc_trill_1f861fe81d1c713c_description" formatted="false">Skips the full-screen splash and TopView ads shown when TikTok opens or returns from the background, and stops TikTok downloading them.</string>
+    <string name="feature_com_ss_android_ugc_trill_3b4927a25b4c6865_description" formatted="false">Removes sponsored videos from the For You, Following, Friends and profile feeds, mid-roll and profile pager ads, search result ads and the scroll lock of short-drama ads, including ads inserted after the feed was loaded and the cold-start cache.</string>
+    <string name="feature_com_ss_android_ugc_trill_468ab769c500f30d_description" formatted="false">Also hides creator posts labelled \"Paid partnership\" (branded content), \"Creator earns commission\" and location affiliate posts. Your own posts are kept.</string>
+    <string name="feature_com_ss_android_ugc_trill_65b6155eb20fc446_description" formatted="false">Prevents TikTok from reacting to screenshots and screen recordings.</string>
+    <string name="feature_com_ss_android_ugc_trill_74aa6c46bc2c0918_description" formatted="false">Also hides videos flagged by TikTok as using a paid promoted sound. May hide some organic creator videos.</string>
+    <string name="feature_com_ss_android_ugc_trill_7ccda72b7bb010e2_description" formatted="false">Removes the tracking parameters (utm_*, share_*, u_code, _r, _t, ...) from TikTok links before they are shared or copied.</string>
+    <string name="feature_com_ss_android_ugc_trill_98c7f577e28bf5e7_description" formatted="false">Saves videos and photos without the TikTok watermark.</string>
+    <string name="feature_com_ss_android_ugc_trill_b44c92db3ec5dfa5_description" formatted="false">Skips browsing puzzle dialogs and reports them as closed. Account verification (SMS, e-mail, password, identity) and login flows are left alone. The action that triggered the puzzle will usually fail instead.</string>
+    <string name="feature_com_ss_android_ugc_trill_bf03f22daa9aea5d_description" formatted="false">Forces TikTok\'s web-based Google sign-in. Only needed when the APK was re-signed (LSPatch or a repackaged build), where Play Services rejects the native flow.</string>
+    <string name="feature_com_ss_android_ugc_trill_d07cb3a932c3a1af_description" formatted="false">Stops TikTok from reporting what you look at: story views, profile visits and the typing indicator. Your online status is unchanged.</string>
+    <string name="feature_com_ss_android_ugc_trill_d4c97261f9011454_description" formatted="false">Opens website links from profiles and story link stickers in your phone\'s browser instead of TikTok\'s in-app browser.</string>
+    <string name="feature_com_ss_android_ugc_trill_d921957be668eb21_description" formatted="false">Hides the TikTok Shop product cards (price, voucher, \"Not interested\" and \"Claim\" buttons) inserted into the For You feed. Independent of Remove feed ads, which only removes sponsored videos.</string>
+    <string name="feature_com_ss_android_ugc_trill_eb8cc73b6d88d1a7_description" formatted="false">Removes TikTok\'s forced login screen so the feed stays usable while signed out.</string>
+    <string name="feature_com_ss_android_ugc_trill_edb21cae01aa6188_description" formatted="false">Shows and enables \"Save video\" (and save photo / GIF / Live Photo) even when the creator turned downloads off, and keeps the sound in saved videos.</string>
+    <string name="feature_com_ss_android_ugc_trill_f409a9e08ccff091_description" formatted="false">Takes FLAG_SECURE off every TikTok window so screenshots and screen recordings work on protected screens too (paid LIVE, payment and verification pages, ...), and lifts the Circle to Search block on the feed.</string>
+    <string name="feature_com_strava_2d21bf3965d222bf_description" formatted="false">Unlocks \"Routes\", \"Matched Runs\" and \"Segment Efforts\".</string>
+    <string name="feature_com_strava_d842f6b0c624b293_description" formatted="false"></string>
+    <string name="feature_com_twitter_android_13f1f144af732b83_description" formatted="false">Get translate option for all posts.</string>
+    <string name="feature_com_twitter_android_20d3118318349208_description" formatted="false">Removes promoted posts, trends and Google ads.</string>
+    <string name="feature_com_twitter_android_26f3c86f06ad7cd0_description" formatted="false">Adds an option to show poll results without voting.</string>
+    <string name="feature_com_twitter_android_62765b401d20adaa_description" formatted="false">Removes premium upsells.</string>
+    <string name="feature_com_twitter_android_67862d074b2c8280_description" formatted="false">Hides the \"new posts\" banner shown at the top of the timeline.</string>
+    <string name="feature_com_twitter_android_75086e373a1b5e4c_description" formatted="false">Hides recommendation items such as \"Who to follow\" and \"Today\'s news\" in timeline, search, and replies.</string>
+    <string name="feature_com_twitter_android_c04b8390e5ae9322_description" formatted="false">Gets rid of t.co short urls by showing the expanded URL instead.</string>
+    <string name="feature_com_twitter_android_cfb6374711a4e095_description" formatted="false">Disables Haze blur in the Compose UI of the new X app, while preserving the configured fallback tint and scrim effects. Has no effect on the older X UI.</string>
+    <string name="feature_com_twitter_android_dc9bf74be398e8aa_description" formatted="false">Unlocks media downloads and offline video saving in the X app.</string>
+    <string name="feature_com_zhiliaoapp_musically_14ab343e54fd4267_description" formatted="false">Stops ByteDance AppLog analytics, AppsFlyer attribution, Firebase screen reports and the Npth/MonitorCrash crash reporters. The For You feed then no longer learns from what you watch.</string>
+    <string name="feature_com_zhiliaoapp_musically_1f861fe81d1c713c_description" formatted="false">Skips the full-screen splash and TopView ads shown when TikTok opens or returns from the background, and stops TikTok downloading them.</string>
+    <string name="feature_com_zhiliaoapp_musically_3b4927a25b4c6865_description" formatted="false">Removes sponsored videos from the For You, Following, Friends and profile feeds, mid-roll and profile pager ads, search result ads and the scroll lock of short-drama ads, including ads inserted after the feed was loaded and the cold-start cache.</string>
+    <string name="feature_com_zhiliaoapp_musically_468ab769c500f30d_description" formatted="false">Also hides creator posts labelled \"Paid partnership\" (branded content), \"Creator earns commission\" and location affiliate posts. Your own posts are kept.</string>
+    <string name="feature_com_zhiliaoapp_musically_65b6155eb20fc446_description" formatted="false">Prevents TikTok from reacting to screenshots and screen recordings.</string>
+    <string name="feature_com_zhiliaoapp_musically_74aa6c46bc2c0918_description" formatted="false">Also hides videos flagged by TikTok as using a paid promoted sound. May hide some organic creator videos.</string>
+    <string name="feature_com_zhiliaoapp_musically_7ccda72b7bb010e2_description" formatted="false">Removes the tracking parameters (utm_*, share_*, u_code, _r, _t, ...) from TikTok links before they are shared or copied.</string>
+    <string name="feature_com_zhiliaoapp_musically_98c7f577e28bf5e7_description" formatted="false">Saves videos and photos without the TikTok watermark.</string>
+    <string name="feature_com_zhiliaoapp_musically_b44c92db3ec5dfa5_description" formatted="false">Skips browsing puzzle dialogs and reports them as closed. Account verification (SMS, e-mail, password, identity) and login flows are left alone. The action that triggered the puzzle will usually fail instead.</string>
+    <string name="feature_com_zhiliaoapp_musically_bf03f22daa9aea5d_description" formatted="false">Forces TikTok\'s web-based Google sign-in. Only needed when the APK was re-signed (LSPatch or a repackaged build), where Play Services rejects the native flow.</string>
+    <string name="feature_com_zhiliaoapp_musically_d07cb3a932c3a1af_description" formatted="false">Stops TikTok from reporting what you look at: story views, profile visits and the typing indicator. Your online status is unchanged.</string>
+    <string name="feature_com_zhiliaoapp_musically_d4c97261f9011454_description" formatted="false">Opens website links from profiles and story link stickers in your phone\'s browser instead of TikTok\'s in-app browser.</string>
+    <string name="feature_com_zhiliaoapp_musically_d921957be668eb21_description" formatted="false">Hides the TikTok Shop product cards (price, voucher, \"Not interested\" and \"Claim\" buttons) inserted into the For You feed. Independent of Remove feed ads, which only removes sponsored videos.</string>
+    <string name="feature_com_zhiliaoapp_musically_eb8cc73b6d88d1a7_description" formatted="false">Removes TikTok\'s forced login screen so the feed stays usable while signed out.</string>
+    <string name="feature_com_zhiliaoapp_musically_edb21cae01aa6188_description" formatted="false">Shows and enables \"Save video\" (and save photo / GIF / Live Photo) even when the creator turned downloads off, and keeps the sound in saved videos.</string>
+    <string name="feature_com_zhiliaoapp_musically_f409a9e08ccff091_description" formatted="false">Takes FLAG_SECURE off every TikTok window so screenshots and screen recordings work on protected screens too (paid LIVE, payment and verification pages, ...), and lifts the Circle to Search block on the feed.</string>
+    <string name="feature_com_zing_zalo_0a6ace71917baef8_description" formatted="false">Hides the Zinstant ad row in the Messages (Tin nhắn) tab and skips loading its content.</string>
+    <string name="feature_com_zing_zalo_1da911138bba51d6_description" formatted="false">Turns off Google/Firebase Analytics (measurement) inside Zalo and blocks its connection to the Google Play services measurement service. Push notifications are unaffected.</string>
+    <string name="feature_com_zing_zalo_26b0a7dd69a1972f_description" formatted="false">Keeps Adtima\'s offline (pre-cached) ad window closed and stops its active-view / impression tracking hits.</string>
+    <string name="feature_com_zing_zalo_3a78e3bf922d1f4a_description" formatted="false">Also blocks pre-roll, mid-roll and audio ad requests. May delay or stall playback if Zalo waits for an ad result — turn this off first if video stops starting.</string>
+    <string name="feature_com_zing_zalo_3c9f71e1b4f4cc11_description" formatted="false">Stops Firebase Crashlytics from collecting and uploading Zalo crash reports, logs, custom keys and your user ID. Zalo itself is unaffected.</string>
+    <string name="feature_com_zing_zalo_43e4efcb1e57753f_description" formatted="false">Stops Zalo from recording events, screens, sessions and views in its analytics database, so there is nothing for it to upload.</string>
+    <string name="feature_com_zing_zalo_440b7026f1b5b5e7_description" formatted="false">Turns off Zalo\'s Story and Community ad slots at their server config flags, so sponsored items are never inserted (no blank gaps, no impressions). Promotions sent as Official Account messages are not affected.</string>
+    <string name="feature_com_zing_zalo_4a93b000f164ad4d_description" formatted="false">Hides sponsored items in the story viewer. Verify the story tray still advances before relying on this.</string>
+    <string name="feature_com_zing_zalo_6610521c8807e4e0_description" formatted="false">Sends photos in Zalo\'s existing Original quality by default, including photos shared in from other apps, and skips the client-side Z Cloud entitlement check. Photos taken with the in-app Zalo camera stay HD. Server upload limits, account restrictions and video quality are unchanged.</string>
+    <string name="feature_com_zing_zalo_69fa9866afa7bce1_description" formatted="false">Gives Zalo and its ad/analytics SDKs an all-zero advertising ID with ad tracking limited, instead of your real Google advertising ID.</string>
+    <string name="feature_com_zing_zalo_72519bdb075cc2d6_description" formatted="false">Keeps large chat files that are still stored on the device usable after Zalo marks them expired, instead of showing the Z Cloud / expired screen. It does not restore missing files or bypass server download limits.</string>
+    <string name="feature_com_zing_zalo_7f73546ad1ccb219_description" formatted="false">Always drops AdMob, Google Ad Manager and IMA from Adtima\'s mediation list, whatever the server config says.</string>
+    <string name="feature_com_zing_zalo_8314196f06a898d2_description" formatted="false">Blocks Adtima impression/click reporting and the Zalo ads tracking receiver.</string>
+    <string name="feature_com_zing_zalo_8efdfc940b20c35d_description" formatted="false">Hides ad containers, native ad layouts and outstream ads in Zalo Video.</string>
+    <string name="feature_com_zing_zalo_960e5f48fe10e6f0_description" formatted="false">Stops sending the \"Đang nhập\" (typing) indicator in individual and group chats. Blocks the typing packet at the socket transport, with the message repository wrapper as a fallback.</string>
+    <string name="feature_com_zing_zalo_9b2d700b942dc77d_description" formatted="false">Keeps the \"Photos – backed up on Google Drive\" option available even after your old backup was deleted. Zalo otherwise only offers it to accounts whose existing backup already used Drive.</string>
+    <string name="feature_com_zing_zalo_b914361360a3723d_description" formatted="false">Records Zalo one-to-one voice/video call audio to Recordings/Zalo Call Recordings as M4A. Runs the native ZRTC recorder. Default off. Recording calls may require the consent of all parties where you live — check local law before enabling.</string>
+    <string name="feature_com_zing_zalo_c1326bc65323945a_description" formatted="false">Stops the bundled Adtima SDK from fetching ad creatives (api.adtimaserver.vn/mobad/*) for native, bundle, banner, interstitial and rewarded placements.</string>
+    <string name="feature_com_zing_zalo_c3ce4002050158a1_description" formatted="false">Tells the bundled Adtima SDK that ad tracking is limited and skips its Google advertising-ID lookup. Complements the Adtima request blocks.</string>
+    <string name="feature_com_zing_zalo_d2f6e287b7004698_description" formatted="false">Hides your read receipts (\"Đã xem\") while still sending delivered status, so you keep receiving other people\'s receipts. Blocks the outbound seen ack at the socket transport (covers direct chats and the group/batch SendSeenManager) with the message repository as a fallback.</string>
+    <string name="feature_com_zing_zalo_d8b53cf22bd2e108_description" formatted="false">Prevents sponsored feed items from loading their zinstant bundle and reporting impressions. Disable this one first if the feed misbehaves.</string>
+    <string name="feature_com_zing_zalo_df9f7d3876363d78_description" formatted="false">Drops sponsored items from the Nhật ký feed at the JSON parse layer, before any view is created. Experimental — turn this off first if posts go missing from your feed.</string>
+    <string name="feature_com_zing_zalo_f0be19e488114ece_description" formatted="false">Collapses sponsored zinstant items in the Nhật ký feed to zero height.</string>
+    <string name="feature_d07cb3a932c3a1af_title" formatted="false">Ghost mode</string>
+    <string name="feature_d1c189d3032ecd6b_title" formatted="false">Hide search ads</string>
+    <string name="feature_d2f6e287b7004698_title" formatted="false">Block seen status</string>
+    <string name="feature_d35b35bac7f89cfd_title" formatted="false">Enable SoundCloud Go+</string>
+    <string name="feature_d4c97261f9011454_title" formatted="false">Open external links in browser</string>
+    <string name="feature_d5fdc1af021e2d36_title" formatted="false">Downloads</string>
+    <string name="feature_d80eb6de80b3b1b8_title" formatted="false">Aggressive banner &amp; ad-break blocking</string>
+    <string name="feature_d842f6b0c624b293_title" formatted="false">Disable subscription suggestions</string>
+    <string name="feature_d8b53cf22bd2e108_title" formatted="false">Skip feed ads binding</string>
+    <string name="feature_d921957be668eb21_title" formatted="false">Hide TikTok Shop ads</string>
+    <string name="feature_db5dc7701e30e1d1_title" formatted="false">Hide in-stream ad breaks</string>
+    <string name="feature_dc9bf74be398e8aa_title" formatted="false">Unlock downloads</string>
+    <string name="feature_de87b57aa7f7e457_title" formatted="false">Download reels</string>
+    <string name="feature_df7533ab7e4f01a0_title" formatted="false">Unlock plus</string>
+    <string name="feature_df9f7d3876363d78_title" formatted="false">Filter feed ads before parsing</string>
+    <string name="feature_e33c325c6be50d46_title" formatted="false">Ghost screenshot</string>
+    <string name="feature_e73edad01f00211d_title" formatted="false">Ghost typing status</string>
+    <string name="feature_e99123e2f3525171_title" formatted="false">Ghost seen state</string>
+    <string name="feature_eaec66e75461e787_title" formatted="false">Alternative thumbnails</string>
+    <string name="feature_eb8cc73b6d88d1a7_title" formatted="false">Disable login requirement</string>
+    <string name="feature_eb92779edb37c484_title" formatted="false">Block ads and analytics</string>
+    <string name="feature_eba5226810e72065_title" formatted="false">Disable read receipts</string>
+    <string name="feature_edb21cae01aa6188_title" formatted="false">Allow restricted downloads</string>
+    <string name="feature_f0be19e488114ece_title" formatted="false">Hide feed ads</string>
+    <string name="feature_f32b006cf82a6be2_title" formatted="false">Enable Peak membership</string>
+    <string name="feature_f409a9e08ccff091_title" formatted="false">Allow screenshots everywhere</string>
+    <string name="feature_f7e371da0073f6a9_title" formatted="false">Navigation bar</string>
+</resources>

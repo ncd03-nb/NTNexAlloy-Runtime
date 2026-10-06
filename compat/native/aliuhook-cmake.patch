@@ -1,0 +1,17 @@
+diff --git a/core/src/main/cpp/CMakeLists.txt b/core/src/main/cpp/CMakeLists.txt
+index 334e4f7..1e2acac 100644
+--- a/core/src/main/cpp/CMakeLists.txt
++++ b/core/src/main/cpp/CMakeLists.txt
+@@ -21,7 +21,9 @@ add_library(aliuhook SHARED
+         xz/linux/lib/xz/xz_dec_stream.c
+ )
+ 
+-find_package(lsplant REQUIRED CONFIG)
+-find_package(dobby REQUIRED CONFIG)
++add_library(lsplant::lsplant SHARED IMPORTED)
++set_target_properties(lsplant::lsplant PROPERTIES IMPORTED_LOCATION "${LSPLANT_LIBRARY}" INTERFACE_INCLUDE_DIRECTORIES "${LSPLANT_INCLUDE}")
++add_library(dobby::dobby STATIC IMPORTED)
++set_target_properties(dobby::dobby PROPERTIES IMPORTED_LOCATION "${DOBBY_LIBRARY}" INTERFACE_INCLUDE_DIRECTORIES "${DOBBY_INCLUDE}")
+ 
+ target_link_libraries(aliuhook log lsplant::lsplant dobby::dobby)
+\ No newline at end of file

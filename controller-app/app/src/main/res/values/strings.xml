@@ -8,4 +8,8 @@
     <string name="not_installed">Not installed</string>
     <string name="download">Download</string>
     <string name="write_failed">Cannot update framework settings. Install NexAlloy XES as a privileged system app.</string>
+    <string name="feature_settings">Feature settings</string>
+    <string name="close">Close</string>
+    <string name="feature_restart">Changes are saved immediately. Reopen the app to apply them.</string>
+    <string name="catalog_unavailable">Feature catalog is unavailable.</string>
 </resources>

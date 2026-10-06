@@ -11,11 +11,13 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -35,13 +37,14 @@ public final class NexAlloyRuntime {
     private static final String TAG = "NTNexAlloy";
     private static final String FRAMEWORK = "/system/framework/framework.jar";
     private static final String PAYLOAD_ENTRY = "ntmanager/NTNexAlloy.apk";
-    private static final String PAYLOAD_VERSION = "2.0.109-compat1";
+    private static final String PAYLOAD_VERSION = "2.0.109-fa1ad110-compat6";
     private static final String RUNTIME_DIR = "ntnexalloy-" + PAYLOAD_VERSION;
     private static final String APP_SETTINGS_PREFIX = "nt_nexalloy_app_";
 
     private static final Set<String> SUPPORTED_PACKAGES = new HashSet<>(Arrays.asList(
             "com.alltrails.alltrails",
             "com.facebook.katana",
+            "com.facebook.orca",
             "com.google.android.gm",
             "com.google.android.googlequicksearchbox",
             "com.instagram.android",
@@ -194,8 +197,9 @@ public final class NexAlloyRuntime {
 
     private static File extract(File directory, String entryName, String outputName)
             throws Exception {
+        String expected = expectedDigest(entryName);
         File output = new File(directory, outputName);
-        if (output.isFile() && output.length() > 0) {
+        if (output.isFile() && expected.equals(digest(output))) {
             return output;
         }
 
@@ -216,6 +220,11 @@ public final class NexAlloyRuntime {
             }
         }
 
+        if (!expected.equals(digest(temporary))) {
+            temporary.delete();
+            throw new IllegalStateException("NexAlloy checksum mismatch: " + entryName
+                    + "; check the app's KernelSU module mount profile");
+        }
         temporary.setReadable(true, true);
         temporary.setExecutable(true, true);
         temporary.setWritable(false, false);
@@ -226,6 +235,34 @@ public final class NexAlloyRuntime {
         output.setExecutable(true, true);
         output.setWritable(false, false);
         return output;
+    }
+
+    private static String digest(File file) throws Exception {
+        MessageDigest hash = MessageDigest.getInstance("SHA-256");
+        try (InputStream input = new FileInputStream(file)) {
+            byte[] buffer = new byte[32 * 1024];
+            int count;
+            while ((count = input.read(buffer)) != -1) hash.update(buffer, 0, count);
+        }
+        StringBuilder hex = new StringBuilder(64);
+        for (byte value : hash.digest()) hex.append(String.format("%02x", value & 0xff));
+        return hex.toString();
+    }
+
+    // Pinned with metadata/payload-manifest.sha256; never mix a new runtime with old assets.
+    private static String expectedDigest(String entry) {
+        switch (entry) {
+            case "ntmanager/NTNexAlloy.apk": return "77b3bd66869343d745a2d4d402a0c07c5100728ef7d5a911e3eccbb2bff62679";
+            case "ntmanager/arm64-v8a/libc++_shared.so": return "b5d97c38a728afe28d341cda3369f512d35eaf9c680c1b0563cd6a63e395230f";
+            case "ntmanager/arm64-v8a/liblsplant.so": return "53eff56530dbd91cdfdee42d5c7b91e6479ef088b7a5906d6abf3e61e1055a7a";
+            case "ntmanager/arm64-v8a/libaliuhook.so": return "61c62a44b2b05154ba7d1545c93e1a66bf875c1f7f82fbdba87b8d033d09176c";
+            case "ntmanager/arm64-v8a/libdexkit.so": return "4b9dc6cca00a8342d1be2ee445c7a0c243451130d73ca29c08b2eda2efca8ae8";
+            case "ntmanager/armeabi-v7a/libc++_shared.so": return "38331a1efcb446eb1a0db440a8db8f41fa4fb698d15c061ab8c491426531c2c0";
+            case "ntmanager/armeabi-v7a/liblsplant.so": return "fc965c4d2de9137e49796aa4278b0281df54694e9b0f12c82b1899909b2508cd";
+            case "ntmanager/armeabi-v7a/libaliuhook.so": return "fc545ee9c7c1b367e936973139da3db2b290e6e767fef332ca7bb0619982ef05";
+            case "ntmanager/armeabi-v7a/libdexkit.so": return "ec2de16dab436a1f2c7545b975abee63134597e076884f0ebe442c43e58dd253";
+            default: throw new IllegalArgumentException("Unpinned NexAlloy asset: " + entry);
+        }
     }
 
     private static Object allocateInstance(Class<?> type) throws Exception {

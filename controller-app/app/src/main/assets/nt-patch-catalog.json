@@ -1,0 +1,978 @@
+{
+  "schema": 1,
+  "version": "2.0.109-fa1ad110-compat6",
+  "apps": [
+    {
+      "name": "Proton VPN",
+      "packageName": "ch.protonvpn.android",
+      "features": [
+        {
+          "id": "b7423260493ab111",
+          "name": "Unlock VPN Plus",
+          "description": "Spoofs the highest plan tier for all UI unlocks, while routing connections through free servers for server-side compatibility. Also skips the upgrade onboarding dialog after login.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "45ae2371d9d4409e",
+          "name": "Remove delay",
+          "description": "Removes the imposed delay when changing VPN servers.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "14ab343e54fd4267",
+          "name": "Disable telemetry",
+          "description": "Blocks all telemetry, analytics, and observability data collection.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "Zalo",
+      "packageName": "com.zing.zalo",
+      "features": [
+        {
+          "id": "f0be19e488114ece",
+          "name": "Hide feed ads",
+          "description": "Collapses sponsored zinstant items in the Nhật ký feed to zero height.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "0a6ace71917baef8",
+          "name": "Hide message ads",
+          "description": "Hides the Zinstant ad row in the Messages (Tin nhắn) tab and skips loading its content.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "d8b53cf22bd2e108",
+          "name": "Skip feed ads binding",
+          "description": "Prevents sponsored feed items from loading their zinstant bundle and reporting impressions. Disable this one first if the feed misbehaves.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "df9f7d3876363d78",
+          "name": "Filter feed ads before parsing",
+          "description": "Drops sponsored items from the Nhật ký feed at the JSON parse layer, before any view is created. Experimental — turn this off first if posts go missing from your feed.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "4a93b000f164ad4d",
+          "name": "Hide story ads",
+          "description": "Hides sponsored items in the story viewer. Verify the story tray still advances before relying on this.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "8efdfc940b20c35d",
+          "name": "Hide Zalo Video ads",
+          "description": "Hides ad containers, native ad layouts and outstream ads in Zalo Video.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "440b7026f1b5b5e7",
+          "name": "Disable sponsored placements",
+          "description": "Turns off Zalo's Story and Community ad slots at their server config flags, so sponsored items are never inserted (no blank gaps, no impressions). Promotions sent as Official Account messages are not affected.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "c1326bc65323945a",
+          "name": "Block Adtima ad requests",
+          "description": "Stops the bundled Adtima SDK from fetching ad creatives (api.adtimaserver.vn/mobad/*) for native, bundle, banner, interstitial and rewarded placements.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "3a78e3bf922d1f4a",
+          "name": "Block Adtima video ad requests",
+          "description": "Also blocks pre-roll, mid-roll and audio ad requests. May delay or stall playback if Zalo waits for an ad result — turn this off first if video stops starting.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "8314196f06a898d2",
+          "name": "Disable ads tracking",
+          "description": "Blocks Adtima impression/click reporting and the Zalo ads tracking receiver.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "26b0a7dd69a1972f",
+          "name": "Disable Adtima offline ads and tracking",
+          "description": "Keeps Adtima's offline (pre-cached) ad window closed and stops its active-view / impression tracking hits.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "c3ce4002050158a1",
+          "name": "Opt out of Adtima ad tracking",
+          "description": "Tells the bundled Adtima SDK that ad tracking is limited and skips its Google advertising-ID lookup. Complements the Adtima request blocks.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "7f73546ad1ccb219",
+          "name": "Remove Google ad networks from Adtima",
+          "description": "Always drops AdMob, Google Ad Manager and IMA from Adtima's mediation list, whatever the server config says.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "3c9f71e1b4f4cc11",
+          "name": "Disable Crashlytics crash reporting",
+          "description": "Stops Firebase Crashlytics from collecting and uploading Zalo crash reports, logs, custom keys and your user ID. Zalo itself is unaffected.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "43e4efcb1e57753f",
+          "name": "Disable analytics database",
+          "description": "Stops Zalo from recording events, screens, sessions and views in its analytics database, so there is nothing for it to upload.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "1da911138bba51d6",
+          "name": "Disable Firebase Analytics",
+          "description": "Turns off Google/Firebase Analytics (measurement) inside Zalo and blocks its connection to the Google Play services measurement service. Push notifications are unaffected.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "69fa9866afa7bce1",
+          "name": "Disable Advertising ID",
+          "description": "Gives Zalo and its ad/analytics SDKs an all-zero advertising ID with ad tracking limited, instead of your real Google advertising ID.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "b914361360a3723d",
+          "name": "Auto-record call audio",
+          "description": "Records Zalo one-to-one voice/video call audio to Recordings/Zalo Call Recordings as M4A. Runs the native ZRTC recorder. Default off. Recording calls may require the consent of all parties where you live — check local law before enabling.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "d2f6e287b7004698",
+          "name": "Block seen status",
+          "description": "Hides your read receipts (\"Đã xem\") while still sending delivered status, so you keep receiving other people's receipts. Blocks the outbound seen ack at the socket transport (covers direct chats and the group/batch SendSeenManager) with the message repository as a fallback.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "960e5f48fe10e6f0",
+          "name": "Block typing status",
+          "description": "Stops sending the \"Đang nhập\" (typing) indicator in individual and group chats. Blocks the typing packet at the socket transport, with the message repository wrapper as a fallback.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "6610521c8807e4e0",
+          "name": "Prefer original photo quality",
+          "description": "Sends photos in Zalo's existing Original quality by default, including photos shared in from other apps, and skips the client-side Z Cloud entitlement check. Photos taken with the in-app Zalo camera stay HD. Server upload limits, account restrictions and video quality are unchanged.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "72519bdb075cc2d6",
+          "name": "Keep expired media accessible",
+          "description": "Keeps large chat files that are still stored on the device usable after Zalo marks them expired, instead of showing the Z Cloud / expired screen. It does not restore missing files or bypass server download limits.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "9b2d700b942dc77d",
+          "name": "Always allow Google Drive photo backup",
+          "description": "Keeps the \"Photos – backed up on Google Drive\" option available even after your old backup was deleted. Zalo otherwise only offers it to accounts whose existing backup already used Drive.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "YouTube",
+      "packageName": "com.google.android.youtube",
+      "features": [
+        {
+          "id": "c1f02ade9d4bd30e",
+          "name": "Remove background playback restrictions",
+          "description": "Removes restrictions on background playback, including playing kids videos in the background.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "7ccda72b7bb010e2",
+          "name": "Sanitize sharing links",
+          "description": "Removes the tracking query parameters from shared links.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "0bd2b26eeb2b2a2e",
+          "name": "Hide ads",
+          "description": "Adds options to hide general ads, Premium promotions and video ads.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "45ecbd6aa96b9433",
+          "name": "SponsorBlock",
+          "description": "Adds options to enable and configure SponsorBlock, which can skip undesired video segments such as sponsored content.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "6a6a85cc5da7708a",
+          "name": "Copy video link",
+          "description": "Adds options to display buttons in the video player to copy video links.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "d5fdc1af021e2d36",
+          "name": "Downloads",
+          "description": "Adds support to download videos with an external downloader app using the in-app download button or a video player action button.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "6225a1943362eab2",
+          "name": "Hide Shorts components",
+          "description": "Adds options to hide components related to Shorts.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "05da93fe49ae4f7f",
+          "name": "Disable Shorts resuming on startup",
+          "description": "Adds an option to disable Shorts from resuming on app startup when Shorts were last being watched.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "f7e371da0073f6a9",
+          "name": "Navigation bar",
+          "description": "Adds options to hide and change the bottom navigation bar (such as the Shorts button) and the upper navigation toolbar.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "135c49a8bfd9a55a",
+          "name": "Swipe controls",
+          "description": "Adds options to enable and configure volume and brightness swipe controls.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "b8c237eb0d10bc61",
+          "name": "Video quality",
+          "description": "Adds options to set default video qualities and always use the advanced video quality menu.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "aa3adcb8a653576c",
+          "name": "Hide layout components",
+          "description": "Adds options to hide general layout components.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "c13547399f969ba7",
+          "name": "Hide video action buttons",
+          "description": "Adds options to hide video action buttons in fullscreen and portrait modes.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "afec2b22114c05f1",
+          "name": "Playback speed",
+          "description": "Adds options to customize available playback speeds, set a default playback speed, and show a speed dialog button in the video player.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "3d98ae41b8c85042",
+          "name": "Auto captions",
+          "description": "Adds an option to disable captions from being automatically enabled.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "77a7c94235c48bed",
+          "name": "Enable debugging",
+          "description": "Adds options for debugging and exporting Morphe logs to the clipboard.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "72cf385602451286",
+          "name": "Force original audio",
+          "description": "Adds an option to always use the original audio track.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "592cb29e2edfc1d5",
+          "name": "Disable video codecs",
+          "description": "Adds options to disable or force HDR, and to disable VP9 codecs.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "eaec66e75461e787",
+          "name": "Alternative thumbnails",
+          "description": "Adds options to replace video thumbnails using the DeArrow API or image captures from the video.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "42639ef743177769",
+          "name": "Bypass image region restrictions",
+          "description": "Adds an option to use a different host for user avatar and channel images and can fix missing images that are blocked in some countries.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "88b6acc28fa92296",
+          "name": "Change start page",
+          "description": "Adds an option to set which page the app opens in instead of the homepage.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "YT Music",
+      "packageName": "com.google.android.apps.youtube.music",
+      "features": [
+        {
+          "id": "c1f02ade9d4bd30e",
+          "name": "Remove background playback restrictions",
+          "description": "Removes restrictions on background playback, including playing kids videos in the background.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "7032d3fa06981766",
+          "name": "Hide upgrade button",
+          "description": "Hides the upgrade tab from the pivot bar.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "0bd2b26eeb2b2a2e",
+          "name": "Hide ads",
+          "description": "Adds options to hide fullscreen ads, Premium promotions and video ads.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "7136044b85070174",
+          "name": "Enable exclusive audio playback",
+          "description": "Enables the option to play audio without video.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "77a7c94235c48bed",
+          "name": "Enable debugging",
+          "description": "Adds options for debugging and exporting Morphe logs to the clipboard.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "7ccda72b7bb010e2",
+          "name": "Sanitize sharing links",
+          "description": "Removes the tracking query parameters from shared links.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "Reddit",
+      "packageName": "com.reddit.frontpage",
+      "features": [
+        {
+          "id": "0bd2b26eeb2b2a2e",
+          "name": "Hide ads",
+          "description": "Adds options to hide ads.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "7ccda72b7bb010e2",
+          "name": "Sanitize sharing links",
+          "description": "Adds an option to sanitize sharing links by removing tracking query parameters.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "acf3209f6b456c6a",
+          "name": "Start as guest",
+          "description": "Skips the forced startup login screen using Reddit's native guest browsing mode.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "Photomath",
+      "packageName": "com.microblink.photomath",
+      "features": [
+        {
+          "id": "df7533ab7e4f01a0",
+          "name": "Unlock plus",
+          "description": "",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "Instagram",
+      "packageName": "com.instagram.android",
+      "features": [
+        {
+          "id": "0bd2b26eeb2b2a2e",
+          "name": "Hide ads",
+          "description": "Hides injected ads, sponsored content, paid partnership, and Reels/Stories ads.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "1503802c3a07f7fe",
+          "name": "Sanitize tracking links",
+          "description": "Removes tracking parameters from Instagram links when copying.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "eb92779edb37c484",
+          "name": "Block ads and analytics",
+          "description": "Blocks ads and analytics network requests for Feed, Reels, Stories, and Explore.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "96f387e57f10a304",
+          "name": "Ghost interceptor",
+          "description": "Blocks ghost mode network requests via TigonServiceLayer (screenshot, view once, story seen).",
+          "defaultEnabled": true
+        },
+        {
+          "id": "e33c325c6be50d46",
+          "name": "Ghost screenshot",
+          "description": "Blocks screenshot notification from being sent to the other party.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "e99123e2f3525171",
+          "name": "Ghost seen state",
+          "description": "Blocks DM read receipts from being sent. Chats you open still show as read on your phone.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "e73edad01f00211d",
+          "name": "Ghost typing status",
+          "description": "Blocks typing indicator from being sent to the other party.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "3ace5d17876792e3",
+          "name": "Ghost view story",
+          "description": "Prevents story seen notifications from being sent to the uploader.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "caf89604e68b6cdf",
+          "name": "Ghost ephemeral keep",
+          "description": "Prevents vanish/ephemeral (disappearing) messages from being deleted locally.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "33edbb04dc9774bd",
+          "name": "Ghost permanent view",
+          "description": "Makes unexpired view-once and replayable media permanently accessible.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "879d2b00ed5f522c",
+          "name": "View live anonymously",
+          "description": "Prevents Instagram from knowing you viewed a live stream by blocking the heartbeat/viewer-count endpoint.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "4afac5539f44ea9e",
+          "name": "Screenshot permission",
+          "description": "Allows screenshots in DMs, stories, and reels by removing FLAG_SECURE.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "acb9381ae04f0e7c",
+          "name": "Save deleted messages",
+          "description": "Keeps direct messages visible after the person who sent them unsends. Blocks Instagram from dropping the message from the conversation and from deleting it locally. Unsending your own messages still works.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "de87b57aa7f7e457",
+          "name": "Download reels",
+          "description": "Adds a Download entry to the reel overflow menu. Reels whose video and audio arrive as separate streams are merged before saving.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "ac7a41bf420611fc",
+          "name": "Download posts",
+          "description": "Adds a Download entry to the three-dots menu on a post. Carousels open a sheet to save the current slide or every slide at once.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "32a11d6dc4741cb4",
+          "name": "Download stories",
+          "description": "Adds a download button to the story viewer. A story with music offers the video and the still photo separately, since the photo has no soundtrack to strip.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "22b599c334bee283",
+          "name": "Download profile pictures",
+          "description": "Adds a Download entry when a profile picture is opened, saving the full-resolution image rather than the cropped thumbnail.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "1f5ede4eb721d277",
+          "name": "Save instants",
+          "description": "Long-press a received instant (quicksnap) in a direct message to save it.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "c39136e2b57c96f9",
+          "name": "Upload instants from gallery",
+          "description": "Adds a chip to the instant camera that sends a picture from the gallery instead of one taken right then.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "97979f37569941e5",
+          "name": "Copy media link",
+          "description": "Adds a Copy link entry beside Download in the post and reel menus, which copies the direct CDN URL of the media.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "601921686bc0b8aa",
+          "name": "Sort downloads into username folders",
+          "description": "Saves each file into a sub-folder named after the account it came from, instead of dropping everything into one folder.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "bfa48cc5b1675cad",
+          "name": "Add a timestamp to download filenames",
+          "description": "Appends the date and time to every saved filename, so saving the same post twice keeps both copies.",
+          "defaultEnabled": false
+        }
+      ]
+    },
+    {
+      "name": "Threads",
+      "packageName": "com.instagram.barcelona",
+      "features": [
+        {
+          "id": "0bd2b26eeb2b2a2e",
+          "name": "Hide ads",
+          "description": "Hides injected ads, sponsored content, and paid partnership posts in Threads feed.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "eb92779edb37c484",
+          "name": "Block ads and analytics",
+          "description": "Blocks ads and analytics network requests.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "1503802c3a07f7fe",
+          "name": "Sanitize tracking links",
+          "description": "Removes tracking parameters from Threads links when copying.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "Strava",
+      "packageName": "com.strava",
+      "features": [
+        {
+          "id": "2d21bf3965d222bf",
+          "name": "Unlock subscription features",
+          "description": "Unlocks \"Routes\", \"Matched Runs\" and \"Segment Efforts\".",
+          "defaultEnabled": true
+        },
+        {
+          "id": "d842f6b0c624b293",
+          "name": "Disable subscription suggestions",
+          "description": "",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "AllTrails",
+      "packageName": "com.alltrails.alltrails",
+      "features": [
+        {
+          "id": "f32b006cf82a6be2",
+          "name": "Enable Peak membership",
+          "description": "Enables app features locked behind the subscription paywall.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "SoundCloud",
+      "packageName": "com.soundcloud.android",
+      "features": [
+        {
+          "id": "d35b35bac7f89cfd",
+          "name": "Enable SoundCloud Go+",
+          "description": "Enables SoundCloud Go+ premium features, offline listening, HQ audio, and disables audio/visual ads.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "15a95f62f956ab39",
+          "name": "Disable analytics",
+          "description": "Disables SoundCloud's analytics.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "6429b81ab47d7db9",
+          "name": "Disable consent popup",
+          "description": "Disables the OneTrust consent/cookies popup and collapses banner views.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "Facebook",
+      "packageName": "com.facebook.katana",
+      "features": [
+        {
+          "id": "67cd03f77783537b",
+          "name": "Hide Facebook ads",
+          "description": "Removes sponsored feed stories, Reels ads, game ads, and banner ads.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "db5dc7701e30e1d1",
+          "name": "Hide in-stream ad breaks",
+          "description": "Removes mid-roll ad breaks and the docked sponsored card from videos and live replays.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "a71ad34a99057fb6",
+          "name": "Hide profile timeline ads",
+          "description": "Removes sponsored posts from profile pages by checking for an advertisement's tracking id. Posts without one are left alone.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "d1c189d3032ecd6b",
+          "name": "Hide search ads",
+          "description": "Removes sponsored results from Facebook search, identified by the result's own advertisement type. Organic results are left untouched.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "82a2aec7ed6fae6e",
+          "name": "Spoof ad-free session",
+          "description": "Makes Facebook believe an ad-free session is active, so the server stops sending sponsored content (including sponsored Stories tray circles).",
+          "defaultEnabled": true
+        },
+        {
+          "id": "d80eb6de80b3b1b8",
+          "name": "Aggressive banner & ad-break blocking",
+          "description": "Broad upstream hooks: ad-break state machine and banner-ad boolean sweep. May break some screens; off by default.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "a800a238a054c629",
+          "name": "View stories without marking seen",
+          "description": "Stops the story viewer from reporting stories as seen, so the owner does not see you in the viewer list.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "732e8698b49149fd",
+          "name": "Allow screenshots & recording",
+          "description": "Removes FLAG_SECURE so screenshots and screen recordings work everywhere in Facebook.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "01bdcdd22652df88",
+          "name": "Block screenshot detection",
+          "description": "Stops Facebook from detecting screenshots and screen recordings.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "c43e2efacbb5e836",
+          "name": "Unwrap l.php redirect links",
+          "description": "Opens the real destination of Facebook's l.php redirect links, without fbclid tracking.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "Google (Discover)",
+      "packageName": "com.google.android.googlequicksearchbox",
+      "features": [
+        {
+          "id": "0e61d18c0654c947",
+          "name": "Filter Discover ads",
+          "description": "Filters promoted ad cards from the Google Discover feed.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "Twitter/X",
+      "packageName": "com.twitter.android",
+      "features": [
+        {
+          "id": "20d3118318349208",
+          "name": "Remove ads",
+          "description": "Removes promoted posts, trends and Google ads.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "75086e373a1b5e4c",
+          "name": "Hide recommendation items",
+          "description": "Hides recommendation items such as \"Who to follow\" and \"Today's news\" in timeline, search, and replies.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "c04b8390e5ae9322",
+          "name": "No shortened URL",
+          "description": "Gets rid of t.co short urls by showing the expanded URL instead.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "62765b401d20adaa",
+          "name": "Remove premium upsell",
+          "description": "Removes premium upsells.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "dc9bf74be398e8aa",
+          "name": "Unlock downloads",
+          "description": "Unlocks media downloads and offline video saving in the X app.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "13f1f144af732b83",
+          "name": "Force enable translate",
+          "description": "Get translate option for all posts.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "26f3c86f06ad7cd0",
+          "name": "Show poll results",
+          "description": "Adds an option to show poll results without voting.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "67862d074b2c8280",
+          "name": "Hide Banner",
+          "description": "Hides the \"new posts\" banner shown at the top of the timeline.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "cfb6374711a4e095",
+          "name": "Disable blur effects",
+          "description": "Disables Haze blur in the Compose UI of the new X app, while preserving the configured fallback tint and scrim effects. Has no effect on the older X UI.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "Gmail",
+      "packageName": "com.google.android.gm",
+      "features": [
+        {
+          "id": "0bd2b26eeb2b2a2e",
+          "name": "Hide ads",
+          "description": "Removes the sponsored rows Gmail renders between conversations.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "Messenger",
+      "packageName": "com.facebook.orca",
+      "features": [
+        {
+          "id": "0bd2b26eeb2b2a2e",
+          "name": "Hide ads",
+          "description": "Filters sponsored InboxAdsItem rows from Messenger inbox lists.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "eba5226810e72065",
+          "name": "Disable read receipts",
+          "description": "Stops outgoing read dispatch while retaining the local inbox update and notification handling.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "8423baa5c94e4b60",
+          "name": "Disable typing status",
+          "description": "Forces outgoing typing state to stopped without cancelling the mailbox callback.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "TikTok",
+      "packageName": "com.zhiliaoapp.musically",
+      "features": [
+        {
+          "id": "3b4927a25b4c6865",
+          "name": "Remove feed ads",
+          "description": "Removes sponsored videos from the For You, Following, Friends and profile feeds, mid-roll and profile pager ads, search result ads and the scroll lock of short-drama ads, including ads inserted after the feed was loaded and the cold-start cache.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "1f861fe81d1c713c",
+          "name": "Skip splash ads",
+          "description": "Skips the full-screen splash and TopView ads shown when TikTok opens or returns from the background, and stops TikTok downloading them.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "d921957be668eb21",
+          "name": "Hide TikTok Shop ads",
+          "description": "Hides the TikTok Shop product cards (price, voucher, \"Not interested\" and \"Claim\" buttons) inserted into the For You feed. Independent of Remove feed ads, which only removes sponsored videos.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "468ab769c500f30d",
+          "name": "Hide paid partnerships",
+          "description": "Also hides creator posts labelled \"Paid partnership\" (branded content), \"Creator earns commission\" and location affiliate posts. Your own posts are kept.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "74aa6c46bc2c0918",
+          "name": "Hide promoted-music videos",
+          "description": "Also hides videos flagged by TikTok as using a paid promoted sound. May hide some organic creator videos.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "65b6155eb20fc446",
+          "name": "Disable screen capture detection",
+          "description": "Prevents TikTok from reacting to screenshots and screen recordings.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "f409a9e08ccff091",
+          "name": "Allow screenshots everywhere",
+          "description": "Takes FLAG_SECURE off every TikTok window so screenshots and screen recordings work on protected screens too (paid LIVE, payment and verification pages, ...), and lifts the Circle to Search block on the feed.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "14ab343e54fd4267",
+          "name": "Disable telemetry",
+          "description": "Stops ByteDance AppLog analytics, AppsFlyer attribution, Firebase screen reports and the Npth/MonitorCrash crash reporters. The For You feed then no longer learns from what you watch.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "d07cb3a932c3a1af",
+          "name": "Ghost mode",
+          "description": "Stops TikTok from reporting what you look at: story views, profile visits and the typing indicator. Your online status is unchanged.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "7ccda72b7bb010e2",
+          "name": "Sanitize sharing links",
+          "description": "Removes the tracking parameters (utm_*, share_*, u_code, _r, _t, ...) from TikTok links before they are shared or copied.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "d4c97261f9011454",
+          "name": "Open external links in browser",
+          "description": "Opens website links from profiles and story link stickers in your phone's browser instead of TikTok's in-app browser.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "eb8cc73b6d88d1a7",
+          "name": "Disable login requirement",
+          "description": "Removes TikTok's forced login screen so the feed stays usable while signed out.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "bf03f22daa9aea5d",
+          "name": "Fix Google login",
+          "description": "Forces TikTok's web-based Google sign-in. Only needed when the APK was re-signed (LSPatch or a repackaged build), where Play Services rejects the native flow.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "b44c92db3ec5dfa5",
+          "name": "Hide CAPTCHA popups",
+          "description": "Skips browsing puzzle dialogs and reports them as closed. Account verification (SMS, e-mail, password, identity) and login flows are left alone. The action that triggered the puzzle will usually fail instead.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "98c7f577e28bf5e7",
+          "name": "Remove download watermark",
+          "description": "Saves videos and photos without the TikTok watermark.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "edb21cae01aa6188",
+          "name": "Allow restricted downloads",
+          "description": "Shows and enables \"Save video\" (and save photo / GIF / Live Photo) even when the creator turned downloads off, and keeps the sound in saved videos.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
+      "name": "TikTok (Asia)",
+      "packageName": "com.ss.android.ugc.trill",
+      "features": [
+        {
+          "id": "3b4927a25b4c6865",
+          "name": "Remove feed ads",
+          "description": "Removes sponsored videos from the For You, Following, Friends and profile feeds, mid-roll and profile pager ads, search result ads and the scroll lock of short-drama ads, including ads inserted after the feed was loaded and the cold-start cache.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "1f861fe81d1c713c",
+          "name": "Skip splash ads",
+          "description": "Skips the full-screen splash and TopView ads shown when TikTok opens or returns from the background, and stops TikTok downloading them.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "d921957be668eb21",
+          "name": "Hide TikTok Shop ads",
+          "description": "Hides the TikTok Shop product cards (price, voucher, \"Not interested\" and \"Claim\" buttons) inserted into the For You feed. Independent of Remove feed ads, which only removes sponsored videos.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "468ab769c500f30d",
+          "name": "Hide paid partnerships",
+          "description": "Also hides creator posts labelled \"Paid partnership\" (branded content), \"Creator earns commission\" and location affiliate posts. Your own posts are kept.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "74aa6c46bc2c0918",
+          "name": "Hide promoted-music videos",
+          "description": "Also hides videos flagged by TikTok as using a paid promoted sound. May hide some organic creator videos.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "65b6155eb20fc446",
+          "name": "Disable screen capture detection",
+          "description": "Prevents TikTok from reacting to screenshots and screen recordings.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "f409a9e08ccff091",
+          "name": "Allow screenshots everywhere",
+          "description": "Takes FLAG_SECURE off every TikTok window so screenshots and screen recordings work on protected screens too (paid LIVE, payment and verification pages, ...), and lifts the Circle to Search block on the feed.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "14ab343e54fd4267",
+          "name": "Disable telemetry",
+          "description": "Stops ByteDance AppLog analytics, AppsFlyer attribution, Firebase screen reports and the Npth/MonitorCrash crash reporters. The For You feed then no longer learns from what you watch.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "d07cb3a932c3a1af",
+          "name": "Ghost mode",
+          "description": "Stops TikTok from reporting what you look at: story views, profile visits and the typing indicator. Your online status is unchanged.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "7ccda72b7bb010e2",
+          "name": "Sanitize sharing links",
+          "description": "Removes the tracking parameters (utm_*, share_*, u_code, _r, _t, ...) from TikTok links before they are shared or copied.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "d4c97261f9011454",
+          "name": "Open external links in browser",
+          "description": "Opens website links from profiles and story link stickers in your phone's browser instead of TikTok's in-app browser.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "eb8cc73b6d88d1a7",
+          "name": "Disable login requirement",
+          "description": "Removes TikTok's forced login screen so the feed stays usable while signed out.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "bf03f22daa9aea5d",
+          "name": "Fix Google login",
+          "description": "Forces TikTok's web-based Google sign-in. Only needed when the APK was re-signed (LSPatch or a repackaged build), where Play Services rejects the native flow.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "b44c92db3ec5dfa5",
+          "name": "Hide CAPTCHA popups",
+          "description": "Skips browsing puzzle dialogs and reports them as closed. Account verification (SMS, e-mail, password, identity) and login flows are left alone. The action that triggered the puzzle will usually fail instead.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "98c7f577e28bf5e7",
+          "name": "Remove download watermark",
+          "description": "Saves videos and photos without the TikTok watermark.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "edb21cae01aa6188",
+          "name": "Allow restricted downloads",
+          "description": "Shows and enables \"Save video\" (and save photo / GIF / Live Photo) even when the creator turned downloads off, and keeps the sound in saved videos.",
+          "defaultEnabled": true
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.provider.Settings
 import android.util.Log
+import org.json.JSONObject
 
 object NexAlloyStore {
     private const val TAG = "NexAlloyXES"
@@ -14,12 +15,46 @@ object NexAlloyStore {
         val downloadUrl: String get() = "https://play.google.com/store/apps/details?id=$packageName"
     }
 
+    data class Feature(val id: String, val name: String, val description: String, val defaultEnabled: Boolean)
+
+    fun features(context: Context, packageName: String): List<Feature> {
+        val catalog = JSONObject(context.assets.open("nt-patch-catalog.json").bufferedReader().use { it.readText() })
+        val apps = catalog.getJSONArray("apps")
+        for (i in 0 until apps.length()) {
+            val app = apps.getJSONObject(i)
+            if (app.getString("packageName") != packageName) continue
+            val features = app.getJSONArray("features")
+            return List(features.length()) { index ->
+                val f = features.getJSONObject(index)
+                val id = f.getString("id")
+                val descriptionKey = "feature_${packageName.replace('.', '_')}_${id}_description"
+                Feature(id, localized(context, "feature_${id}_title", f.getString("name")),
+                    localized(context, descriptionKey, f.getString("description")), f.getBoolean("defaultEnabled"))
+            }
+        }
+        return emptyList()
+    }
+
+    private fun localized(context: Context, key: String, fallback: String): String {
+        val resource = context.resources.getIdentifier(key, "string", context.packageName)
+        return if (resource == 0) fallback else context.getString(resource)
+    }
+
+    fun isFeatureEnabled(context: Context, packageName: String, feature: Feature): Boolean =
+        read(context, featureKey(packageName, feature.id), feature.defaultEnabled)
+
+    fun setFeatureEnabled(context: Context, packageName: String, feature: Feature, enabled: Boolean): Boolean =
+        write(context, featureKey(packageName, feature.id), enabled)
+
+    private fun featureKey(packageName: String, id: String) = "nt_nexalloy_feature_${packageName}_$id"
+
     val apps = listOf(
         SupportedApp("AllTrails", "com.alltrails.alltrails"),
         SupportedApp("Facebook", "com.facebook.katana"),
         SupportedApp("Gmail", "com.google.android.gm"),
         SupportedApp("Google Discover", "com.google.android.googlequicksearchbox"),
         SupportedApp("Instagram", "com.instagram.android"),
+        SupportedApp("Messenger", "com.facebook.orca"),
         SupportedApp("Photomath", "com.microblink.photomath"),
         SupportedApp("Proton VPN", "ch.protonvpn.android"),
         SupportedApp("Reddit", "com.reddit.frontpage"),

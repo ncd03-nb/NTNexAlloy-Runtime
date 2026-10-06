@@ -1,0 +1,13 @@
+diff --git a/lsplant/build.gradle.kts b/lsplant/build.gradle.kts
+index f9bd8e0..d989af1 100644
+--- a/lsplant/build.gradle.kts
++++ b/lsplant/build.gradle.kts
+@@ -80,7 +80,7 @@ cmaker {
+             "-Werror",
+             "-Wno-gnu-string-literal-operator-template",
+         )
+-        abiFilters("armeabi-v7a", "arm64-v8a", "x86", "x86_64", "riscv64")
++        abiFilters("armeabi-v7a", "arm64-v8a")
+         cppFlags += flags
+         cFlags += flags
+     }

@@ -1,0 +1,257 @@
+diff --git a/app/src/main/java/io/github/nexalloy/AppPatchInfo.kt b/app/src/main/java/io/github/nexalloy/AppPatchInfo.kt
+index e8524289..fb76d667 100644
+--- a/app/src/main/java/io/github/nexalloy/AppPatchInfo.kt
++++ b/app/src/main/java/io/github/nexalloy/AppPatchInfo.kt
+@@ -11,7 +11,6 @@ import io.github.nexalloy.revanced.googlephotos.GooglePhotosPatches
+ import io.github.nexalloy.revanced.instagram.InstagramPatches
+ import io.github.nexalloy.revanced.threads.ThreadsPatches
+ import io.github.nexalloy.revanced.facebook.FacebookPatches
+-import io.github.nexalloy.revanced.messenger.MESSENGER_PACKAGE_NAME
+ import io.github.nexalloy.revanced.messenger.MessengerPatches
+ import io.github.nexalloy.revanced.photomath.PhotomathPatches
+ import io.github.nexalloy.revanced.strava.StravaPatches
+@@ -48,10 +47,10 @@ val appPatchConfigurations = listOf(
+     AppPatchInfo("AllTrails", "com.alltrails.alltrails", AllTrailsPatches),
+     AppPatchInfo("SoundCloud", SOUNDCLOUD_PACKAGE_NAME, SoundCloudPatches),
+     AppPatchInfo("Facebook", "com.facebook.katana", FacebookPatches, DexSource.CLASS_LOADER),
+-    AppPatchInfo("Messenger", MESSENGER_PACKAGE_NAME, MessengerPatches),
+     AppPatchInfo("Google (Discover)", "com.google.android.googlequicksearchbox", GoogleDiscoverPatches),
+     AppPatchInfo("Twitter/X", TWITTER_PACKAGE_NAME, TwitterPatches),
+     AppPatchInfo("Gmail", GMAIL_PACKAGE_NAME, GmailPatches),
++    AppPatchInfo("Messenger", "com.facebook.orca", MessengerPatches, DexSource.APK_WITH_SPLITS),
+     AppPatchInfo("TikTok", TIKTOK_PACKAGE_NAME, TikTokPatches, DexSource.APK_WITH_SPLITS),
+     AppPatchInfo("TikTok (Asia)", TIKTOK_ASIA_PACKAGE_NAME, TikTokPatches, DexSource.APK_WITH_SPLITS),
+ )
+diff --git a/app/src/main/java/io/github/nexalloy/PatchExecutor.kt b/app/src/main/java/io/github/nexalloy/PatchExecutor.kt
+index 9ff8fa0c..43253479 100644
+--- a/app/src/main/java/io/github/nexalloy/PatchExecutor.kt
++++ b/app/src/main/java/io/github/nexalloy/PatchExecutor.kt
+@@ -8,6 +8,8 @@ import android.app.Application
+ import android.content.Context.MODE_PRIVATE
+ import android.os.Build
+ import android.os.Bundle
++import android.provider.Settings
++import java.security.MessageDigest
+ import android.webkit.WebView
+ import app.morphe.extension.shared.Logger
+ import app.morphe.extension.shared.ResourceUtils
+@@ -165,6 +167,7 @@ class PatchExecutor(
+     private lateinit var patches: Array<Patch>
+     private val appliedPatches = mutableSetOf<Patch>()
+     private val failedPatches = mutableListOf<Patch>()
++    private val featureStatus = appContext.getSharedPreferences("nt_nexalloy_features", MODE_PRIVATE)
+ 
+     // cache
+     private val moduleRel = BuildConfig.COMMIT_HASH
+@@ -192,6 +195,7 @@ class PatchExecutor(
+     
+     fun applyPatches(patches: Array<Patch>) {
+         this.patches = patches
++        featureStatus.edit().clear().apply()
+         if (dexSource == DexSource.CLASS_LOADER) {
+             runCatching { dexkit.close() }
+             dexGate = KatanaDexGate(this).also { it.start() }
+@@ -214,7 +218,18 @@ class PatchExecutor(
+     private var cacheChecked = false
+ 
+     internal val enabledPatchCount: Int
+-        get() = patches.count { patchPreferences?.getBoolean(it.name, it.use) ?: it.use }
++        get() = patches.count { isPatchEnabled(it) }
++
++    private fun isPatchEnabled(patch: Patch): Boolean {
++        val fallback = patchPreferences.getBoolean(patch.name, patch.use)
++        if (patch.name.isBlank() || patch.name.startsWith("<")) return fallback
++        val id = MessageDigest.getInstance("SHA-256").digest(patch.name.toByteArray(Charsets.UTF_8))
++            .take(8).joinToString("") { "%02x".format(it.toInt() and 0xff) }
++        val key = "nt_nexalloy_feature_${lpparam.packageName}_$id"
++        return runCatching {
++            Settings.Global.getInt(appContext.contentResolver, key, if (fallback) 1 else 0) != 0
++        }.getOrDefault(fallback)
++    }
+ 
+     internal val outstandingPatchCount: Int
+         get() = enabledPatchCount - appliedPatches.size
+@@ -277,12 +292,20 @@ class PatchExecutor(
+             /**
+              * @see io.github.nexalloy.activity.AppPatchSettingsActivity.AppPatchSettingsFragment.onCreate
+              * */
+-            val isEnabled = patchPreferences?.getBoolean(hook.name, hook.use) ?: hook.use
+-            if (!isEnabled) return@forEach // Pref Key
++            if (!isPatchEnabled(hook)) {
++                if (hook.name.isNotBlank() && !hook.name.startsWith("<"))
++                    featureStatus.edit().putString(hook.name, "disabled").apply()
++                Logger.printInfo { "Feature disabled: ${hook.name}" }
++                return@forEach
++            }
+             runCatching { hook.run(this) }.onFailure { err ->
++                if (hook.name.isNotBlank() && !hook.name.startsWith("<"))
++                    featureStatus.edit().putString(hook.name, "error: ${err.javaClass.simpleName}").apply()
+                 XposedBridge.log(err)
+                 failedPatches.add(hook)
+             }.onSuccess {
++                if (hook.name.isNotBlank() && !hook.name.startsWith("<"))
++                    featureStatus.edit().putString(hook.name, "applied").apply()
+                 appliedPatches.add(hook)
+             }
+         }
+@@ -320,10 +343,18 @@ class PatchExecutor(
+ 
+     fun dependsOn(vararg patches: Patch) {
+         patches.forEach { hook ->
++            // Public feature switches remain authoritative when another patch uses them.
++            // Internal unnamed helpers keep the upstream dependency behavior.
++            if (hook.name.isNotBlank() && !hook.name.startsWith("<") && !isPatchEnabled(hook)) {
++                featureStatus.edit().putString(hook.name, "disabled").apply()
++                return@forEach
++            }
+             if (appliedPatches.contains(hook)) return@forEach
+             runCatching { (hook.run(this)) }.onFailure { err ->
+                 throw DependedHookFailedException(hook.name, err)
+             }.onSuccess {
++                if (hook.name.isNotBlank() && !hook.name.startsWith("<"))
++                    featureStatus.edit().putString(hook.name, "applied").apply()
+                 appliedPatches.add(hook)
+             }
+         }
+diff --git a/app/src/main/java/io/github/nexalloy/morphe/music/misc/settings/SettingsPatch.kt b/app/src/main/java/io/github/nexalloy/morphe/music/misc/settings/SettingsPatch.kt
+index 85908148..fc5a75f5 100644
+--- a/app/src/main/java/io/github/nexalloy/morphe/music/misc/settings/SettingsPatch.kt
++++ b/app/src/main/java/io/github/nexalloy/morphe/music/misc/settings/SettingsPatch.kt
+@@ -11,6 +11,7 @@ import app.morphe.extension.shared.settings.preference.about.MorpheAboutPreferen
+ import de.robv.android.xposed.XC_MethodReplacement
+ import de.robv.android.xposed.XposedBridge
+ import io.github.nexalloy.R
++import io.github.nexalloy.specialInvoker
+ import io.github.nexalloy.morphe.music.shared.MusicActivityOnCreateFingerprint
+ import io.github.nexalloy.morphe.shared.misc.settings.preference.BasePreferenceScreen
+ import io.github.nexalloy.morphe.shared.misc.settings.preference.InputType
+@@ -74,7 +75,8 @@ val SettingsHook = patch(
+             activity.setTheme(ResourceUtils.getStyleIdentifier("@style/Theme.YouTubeMusic"))
+             MusicActivityHook.initialize(activity)
+             activity.theme.applyStyle(R.style.ListDividerNull, true)
+-            XposedBridge.invokeOriginalMethod(superOnCreateMethod, param.thisObject, param.args)
++            specialInvoker(superOnCreateMethod, param.method.declaringClass)
++                .bindTo(activity).invokeWithArguments(param.args.toList())
+             param.result = Unit
+         }
+     }
+diff --git a/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/settings/SettingsPatch.kt b/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/settings/SettingsPatch.kt
+index a3ba41eb..bc4dde64 100644
+--- a/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/settings/SettingsPatch.kt
++++ b/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/settings/SettingsPatch.kt
+@@ -9,6 +9,7 @@ import de.robv.android.xposed.XC_MethodHook
+ import de.robv.android.xposed.XC_MethodReplacement
+ import de.robv.android.xposed.XposedBridge
+ import io.github.nexalloy.R
++import io.github.nexalloy.specialInvoker
+ import io.github.nexalloy.invokeOriginalMethod
+ import io.github.nexalloy.morphe.shared.misc.initialization.initializationPatch
+ import io.github.nexalloy.morphe.shared.misc.settings.preference.BasePreference
+@@ -47,12 +48,13 @@ val SettingsHook = patch(
+     }
+ 
+     val superOnCreateMethod = ::licenseActivitySuperOnCreate.method
++    val superOnCreate = specialInvoker(superOnCreateMethod, ::licenseActivityOnCreateFingerprint.method.declaringClass)
+     ::licenseActivityOnCreateFingerprint.hookMethod(object : XC_MethodReplacement() {
+         override fun replaceHookedMethod(param: XC_MethodHook.MethodHookParam) {
+             val activity = param.thisObject as Activity
+             YouTubeActivityHook.initialize(activity)
+             activity.theme.applyStyle(R.style.ListDividerNull, true)
+-            XposedBridge.invokeOriginalMethod(superOnCreateMethod, param.thisObject, param.args)
++            superOnCreate.bindTo(activity).invokeWithArguments(param.args.toList())
+         }
+     })
+ 
+diff --git a/app/src/main/java/io/github/nexalloy/revanced/messenger/MessengerHook.kt b/app/src/main/java/io/github/nexalloy/revanced/messenger/MessengerHook.kt
+new file mode 100644
+index 00000000..318d4744
+--- /dev/null
++++ b/app/src/main/java/io/github/nexalloy/revanced/messenger/MessengerHook.kt
+@@ -0,0 +1,87 @@
++package io.github.nexalloy.revanced.messenger
++
++import app.morphe.extension.shared.Logger
++import io.github.nexalloy.hookMethod
++import io.github.nexalloy.morphe.findMethodListDirect
++import io.github.nexalloy.patch
++import java.lang.reflect.Modifier
++
++const val MESSENGER_PACKAGE_NAME = "com.facebook.orca"
++private const val ADS_ITEM = "com.facebook.messaging.business.inboxads.common.InboxAdsItem"
++private const val MARK_PARAMS = "com.facebook.messaging.service.model.MarkThreadsParams"
++
++val readDispatch = findMethodListDirect {
++    findMethod { matcher { usingEqStrings("markThreadsParams", "android_messaging_mark_read_t_start", "mark_threads") } }
++        .filter { it.returnTypeName == "void" && MARK_PARAMS in it.paramTypeNames }
++}
++
++val typingDispatch = findMethodListDirect {
++    findMethod { matcher { usingEqStrings("setTypingIndicatorForThreadWithThreadIdentifier") } }
++        .filter { it.paramTypeNames == listOf("java.lang.String", "boolean") && !Modifier.isStatic(it.modifiers) }
++}
++
++val HideMessengerAds = patch(
++    name = "Hide ads",
++    description = "Filters sponsored InboxAdsItem rows from Messenger inbox lists.",
++) {
++    val adClass = classLoader.loadClass(ADS_ITEM)
++    val builder = classLoader.loadClass("com.google.common.collect.ImmutableList\$Builder")
++    // Keep the builder's return type and ordinary messages intact.
++    builder.declaredMethods.filter { it.name == "add" && it.parameterTypes.contentEquals(arrayOf(Any::class.java)) }
++        .forEach { method -> method.hookMethod { before { if (adClass.isInstance(it.args[0])) it.result = it.thisObject } } }
++    java.util.ArrayList::class.java.getDeclaredMethod("add", Any::class.java).hookMethod {
++        before { if (adClass.isInstance(it.args[0])) it.result = false }
++    }
++    java.util.ArrayList::class.java.getDeclaredMethod("add", Int::class.javaPrimitiveType, Any::class.java).hookMethod {
++        before { if (adClass.isInstance(it.args[1])) it.result = null }
++    }
++    fun filtered(collection: Collection<*>): Collection<*> =
++        if (collection.any { adClass.isInstance(it) }) collection.filterNot { adClass.isInstance(it) } else collection
++    for (method in java.util.ArrayList::class.java.declaredMethods.filter { it.name == "addAll" }) {
++        method.hookMethod { before { param ->
++            val index = param.args.indexOfFirst { it is Collection<*> }
++            if (index >= 0) param.args[index] = filtered(param.args[index] as Collection<*>)
++        } }
++    }
++    builder.declaredMethods.filter { it.name == "addAll" && it.parameterTypes.contentEquals(arrayOf(Iterable::class.java)) }
++        .forEach { method -> method.hookMethod { before { param ->
++            val values = (param.args[0] as Iterable<*>).toList()
++            param.args[0] = filtered(values)
++        } } }
++    Logger.printInfo { "Messenger sponsored inbox list filters installed" }
++}
++
++val DisableMessengerReadReceipts = patch(
++    name = "Disable read receipts",
++    description = "Stops outgoing read dispatch while retaining the local inbox update and notification handling.",
++) {
++    val methods = ::readDispatch.dexMethodList
++    check(methods.size == 1) { "Messenger outgoing read dispatch is missing or ambiguous" }
++    val method = methods.single().toMethod()
++    val argument = method.parameterTypes.indexOfFirst { it.name == MARK_PARAMS }
++    // In the inspected APK, the sole Integer field is the operation: 0 = read, 1 = unread.
++    val operation = method.parameterTypes[argument].declaredFields.single { it.type == Integer::class.java }
++        .apply { isAccessible = true }
++    method.hookMethod { before { param ->
++        if ((operation.get(param.args[argument]) as? Int) == 0) {
++            param.result = null
++            Logger.printInfo { "Messenger outgoing read dispatch blocked" }
++        }
++    } }
++    Logger.printInfo { "Messenger outgoing read dispatch hook installed" }
++}
++
++val DisableMessengerTyping = patch(
++    name = "Disable typing status",
++    description = "Forces outgoing typing state to stopped without cancelling the mailbox callback.",
++) {
++    val methods = ::typingDispatch.dexMethodList
++    check(methods.size == 1) { "Messenger outgoing typing dispatch is missing or ambiguous" }
++    methods.single().hookMethod { before { param ->
++        if (param.args[1] == true) Logger.printInfo { "Messenger outgoing typing start suppressed" }
++        param.args[1] = false
++    } }
++    Logger.printInfo { "Messenger outgoing typing hook installed" }
++}
++
++val MessengerPatches = arrayOf(HideMessengerAds, DisableMessengerReadReceipts, DisableMessengerTyping)

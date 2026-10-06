@@ -14,7 +14,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +33,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -54,8 +58,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 
 class MainActivity : ComponentActivity() {
@@ -158,8 +164,10 @@ private fun SupportedAppCard(app: NexAlloyStore.SupportedApp) {
     var appEnabled by remember(app.packageName) {
         mutableStateOf(NexAlloyStore.isAppEnabled(context, app.packageName))
     }
+    var showFeatures by remember(app.packageName) { mutableStateOf(false) }
 
     Card(
+        onClick = { if (installed) showFeatures = true },
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceContainerLow),
         shape = RoundedCornerShape(24.dp),
@@ -171,7 +179,7 @@ private fun SupportedAppCard(app: NexAlloyStore.SupportedApp) {
             AppIcon(icon)
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
-                Text(app.name, style = MaterialTheme.typography.titleLarge)
+                Text(app.name, style = MaterialTheme.typography.titleLarge, fontSize = 18.sp)
                 Text(
                     stringResource(if (installed) R.string.installed else R.string.not_installed),
                     style = MaterialTheme.typography.bodyMedium,
@@ -189,14 +197,63 @@ private fun SupportedAppCard(app: NexAlloyStore.SupportedApp) {
                     }
                 })
             } else {
-                Button(onClick = {
-                    runCatching {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(app.downloadUrl)))
-                    }
-                }) { Text(stringResource(R.string.download)) }
+                Box(Modifier.height(48.dp), contentAlignment = Alignment.Center) {
+                    Button(
+                        modifier = Modifier.height(36.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+                        onClick = {
+                            runCatching {
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(app.downloadUrl)))
+                            }
+                        },
+                    ) { Text(stringResource(R.string.download), fontSize = 12.sp) }
+                }
             }
         }
     }
+    if (showFeatures) FeatureDialog(app, onDismiss = { showFeatures = false })
+}
+
+@Composable
+private fun FeatureDialog(app: NexAlloyStore.SupportedApp, onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    val locales = LocalConfiguration.current.locales.toLanguageTags()
+    val features = remember(app.packageName, locales) {
+        runCatching { NexAlloyStore.features(context, app.packageName) }
+            .onFailure { Log.e("NexAlloyXES", "Feature catalog failed", it) }.getOrNull()
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(app.name) },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } },
+        text = {
+            Column {
+                Text(stringResource(R.string.feature_restart), style = MaterialTheme.typography.bodySmall)
+                Spacer(Modifier.height(12.dp))
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    if (features.isNullOrEmpty()) item { Text(stringResource(R.string.catalog_unavailable)) }
+                    else items(features, key = { it.id }) { feature ->
+                        var checked by remember(app.packageName, feature.id) {
+                            mutableStateOf(NexAlloyStore.isFeatureEnabled(context, app.packageName, feature))
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) {
+                                Text(feature.name, style = MaterialTheme.typography.titleMedium)
+                                if (feature.description.isNotBlank()) Text(feature.description, style = MaterialTheme.typography.bodySmall)
+                            }
+                            Spacer(Modifier.width(8.dp))
+                            Switch(checked = checked, onCheckedChange = { next ->
+                                if (NexAlloyStore.setFeatureEnabled(context, app.packageName, feature, next)) {
+                                    checked = NexAlloyStore.isFeatureEnabled(context, app.packageName, feature)
+                                    NexAlloyStore.forceStop(context, listOf(app.packageName))
+                                } else Toast.makeText(context, R.string.write_failed, Toast.LENGTH_LONG).show()
+                            })
+                        }
+                    }
+                }
+            }
+        },
+    )
 }
 
 @Composable

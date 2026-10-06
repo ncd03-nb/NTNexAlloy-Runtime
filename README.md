@@ -27,7 +27,7 @@ See [NOTICE.md](NOTICE.md) for detailed attribution and licensing boundaries.
 - `NexAlloyRuntime.java`: process filter, per-app switches, payload extraction, class-loader setup,
   native loader invocation, and Xposed callback bridge.
 - `controller-app/`: standalone `com.hma.nexalloy` Android app that owns the global and per-app
-  runtime controls formerly hosted by NT Manager.
+  runtime controls formerly hosted by NT Manager, plus per-feature app dialogs.
 - `scripts/export-smali.sh`: reproducible Java → DEX → smali export for ROM toolbuilds.
 - `docs/INTEGRATION.md`: framework and payload layout contract.
 - `metadata/payload-manifest.sha256`: hashes of the tested pinned payload, without redistributing
@@ -35,12 +35,18 @@ See [NOTICE.md](NOTICE.md) for detailed attribution and licensing boundaries.
 
 ## Current compatibility snapshot
 
-- Upstream fork release tag: `v1.0`
-- Payload version: `2.0.109-compat1` (`versionCode 109`, Xposed callback-extra compatibility)
+- Upstream default branch: `root`, commit `fa1ad1107638a5fd8d5b98e112b8d116b866938f` (2026-10-05)
+- Payload version: `2.0.109-fa1ad110-compat6` (`versionCode 109`, legacy framework entrypoint)
 - Runtime API: `1`
 - Android framework target: API 37
 - Architectures: `arm64-v8a`, `armeabi-v7a`
 - Google Photos is deliberately excluded because NT Manager already provides that feature.
+
+This snapshot is provisional. On ColorOS 16, Messenger 581.0.0.49.91 starts
+without the previously observed crash, but the user still observes outgoing read
+receipts with "Disable read receipts" enabled. An installed hook or an "applied"
+status does not prove that the server-side receipt was blocked. See
+[validation notes](docs/VALIDATION-20261007.md) for the current limits.
 
 ## Export smali
 
@@ -59,6 +65,22 @@ build/smali/android/security/ntmanager/NexAlloyRuntime.smali
 ```
 
 ## Build the standalone controller
+
+Tap an installed app row to open individual feature switches. The adjacent app
+switch still enables or disables that app. Feature titles and descriptions follow Android's system locale:
+Vietnamese resources are included, with English as the default fallback. Localized
+display text never changes the upstream-name hashes used by the framework.
+
+Regenerate the catalog and locale resources after updating the pinned source:
+
+```powershell
+python scripts/export-feature-catalog.py --source <patched-upstream-checkout> --output controller-app/app/src/main/assets/nt-patch-catalog.json --version 2.0.109-fa1ad110-compat6 --resource-root controller-app/app/src/main/res --translations-dir controller-app/translations
+```
+
+All public features must have a translation entry. Package-specific descriptions
+remain separate; the resource keep file preserves dynamically resolved strings in
+release builds. Add future translations to `controller-app/translations/<locale>.json`
+and the corresponding Android UI strings under `values-<locale>`.
 
 The controller targets Android 13+ and must be installed as a privileged system app to write the
 shared `Settings.Global` contract without a development-time ADB grant.

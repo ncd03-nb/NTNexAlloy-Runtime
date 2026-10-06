@@ -1,0 +1,55 @@
+diff --git a/extensions/youtube/src/main/java/app/morphe/extension/youtube/swipecontrols/SwipeControlsHostActivity.kt b/extensions/youtube/src/main/java/app/morphe/extension/youtube/swipecontrols/SwipeControlsHostActivity.kt
+index 4cad5443d..34a634d70 100644
+--- a/extensions/youtube/src/main/java/app/morphe/extension/youtube/swipecontrols/SwipeControlsHostActivity.kt
++++ b/extensions/youtube/src/main/java/app/morphe/extension/youtube/swipecontrols/SwipeControlsHostActivity.kt
+@@ -40,9 +40,10 @@ import de.robv.android.xposed.XC_MethodHook
+ import de.robv.android.xposed.XC_MethodHook.MethodHookParam
+ import de.robv.android.xposed.XposedBridge
+ import de.robv.android.xposed.XposedHelpers
+-import io.github.libxposed.api.XposedInterface
+ import java.lang.ref.WeakReference
+ import java.lang.reflect.Method
++import java.lang.invoke.MethodHandle
++import io.github.nexalloy.specialInvoker
+ import kotlin.concurrent.Volatile
+ 
+ /**
+@@ -104,10 +105,7 @@ class SwipeControlsHostActivity(val activity: Activity) {
+      * @return Whether the event was consumed.
+      */
+     fun dispatchDownstreamTouchEvent(event: MotionEvent): Boolean {
+-        return dispatchDownstreamTouchEventMethod.invokeSpecial(
+-            activity,
+-            event
+-        ) as Boolean
++        return dispatchDownstreamTouchEventMethod.invokeWithArguments(activity, event) as Boolean
+     }
+ 
+     /**
+@@ -315,10 +313,9 @@ class SwipeControlsHostActivity(val activity: Activity) {
+                 thisObject, "swipeControlsHost"
+             ) as SwipeControlsHostActivity
+ 
+-        private lateinit var dispatchDownstreamTouchEventMethod: XposedInterface.Invoker<*, Method?>
++        private lateinit var dispatchDownstreamTouchEventMethod: MethodHandle
+ 
+         @JvmStatic
+-        context(xposed: XposedInterface)
+         fun hookActivity(activityClass: Class<*>) {
+             XposedBridge.hookAllConstructors(activityClass, object : XC_MethodHook() {
+                 override fun afterHookedMethod(param: MethodHookParam) {
+@@ -366,11 +363,9 @@ class SwipeControlsHostActivity(val activity: Activity) {
+                 })
+ 
+             // invoke super method
+-            dispatchDownstreamTouchEventMethod = xposed.getInvoker(
+-                Activity::class.java.getDeclaredMethod(
+-                    "dispatchTouchEvent",
+-                    MotionEvent::class.java
+-                )
++            dispatchDownstreamTouchEventMethod = specialInvoker(
++                Activity::class.java.getDeclaredMethod("dispatchTouchEvent", MotionEvent::class.java),
++                activityClass
+             )
+ 
+             XposedHelpers.findAndHookMethod(
