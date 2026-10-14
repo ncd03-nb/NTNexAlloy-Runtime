@@ -71,7 +71,32 @@ The update is intentionally ROM-coupled; this project does not implement hot rep
 framework-resident hook payload.
 
 
-## Default-branch snapshot fa1ad110
+## Release snapshot b61974f (2026-10-14)
+
+The latest `v1.0` release APK identifies commit
+`b61974fdea5b1b5a944657072c0a01d6426bb41e` and versionCode 110. The tag reference
+itself still points to the older versionCode 103 source; do not build that tag.
+The release commit and root commit `6b188252e1009b36125bdf7f2bf616c4427cb099`
+have identical source trees. APK provenance is recorded in `metadata/release.properties`.
+
+Apply `compat/b61974f/legacy-entrypoint.patch` to the release checkout and
+`compat/b61974f/legacy-swipe.patch` inside its pinned `morphe-patches` submodule.
+This ports the modern Xposed entrypoint to the embedded legacy engine, keeps
+superclass dispatch through `MethodHandles`, and connects feature switches to
+`Settings.Global`. Build the patched source; the unmodified release APK requires
+modern libxposed and cannot be embedded directly in this runtime.
+
+The release supplies Messenger privacy hooks. Only the existing NT Messenger
+inbox-ad filter is carried forward; the old read-receipt/typing implementations
+are replaced. Renamed Messenger switches fall back to their old setting IDs
+when the new ID has no explicit value, consistently in controller and payload.
+
+Use the packaging/export procedure below, with cache version
+`2.0.110-b61974f-compat1`. All nine manifest entries, runtime pins, controller
+catalog, and toolbuild exports must be updated together. See
+[device validation](VALIDATION-20261014.md) for results and remaining limits.
+
+## Historical default-branch snapshot fa1ad110
 
 The tested snapshot is pinned by full commit in `metadata/release.properties`.
 Its APK versionCode remains 109 upstream; the runtime cache version includes

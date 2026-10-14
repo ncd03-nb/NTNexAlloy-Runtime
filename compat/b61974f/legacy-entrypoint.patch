@@ -1,0 +1,427 @@
+diff --git a/app/proguard-rules.pro b/app/proguard-rules.pro
+index 736fafd..649ac79 100644
+--- a/app/proguard-rules.pro
++++ b/app/proguard-rules.pro
+@@ -37,4 +37,6 @@
+ -adaptresourcefilecontents META-INF/xposed/java_init.list
+ -keep,allowoptimization,allowobfuscation public class * extends io.github.libxposed.api.XposedModule {
+     public <init>();
+-}
+\ No newline at end of file
++}
++# NT framework reflects the legacy entrypoint by its stable name.
++-keep class io.github.nexalloy.MainHook { *; }
+diff --git a/app/src/main/java/io/github/nexalloy/AppPatchInfo.kt b/app/src/main/java/io/github/nexalloy/AppPatchInfo.kt
+index e852428..297aa81 100644
+--- a/app/src/main/java/io/github/nexalloy/AppPatchInfo.kt
++++ b/app/src/main/java/io/github/nexalloy/AppPatchInfo.kt
+@@ -48,7 +48,7 @@ val appPatchConfigurations = listOf(
+     AppPatchInfo("AllTrails", "com.alltrails.alltrails", AllTrailsPatches),
+     AppPatchInfo("SoundCloud", SOUNDCLOUD_PACKAGE_NAME, SoundCloudPatches),
+     AppPatchInfo("Facebook", "com.facebook.katana", FacebookPatches, DexSource.CLASS_LOADER),
+-    AppPatchInfo("Messenger", MESSENGER_PACKAGE_NAME, MessengerPatches),
++    AppPatchInfo("Messenger", MESSENGER_PACKAGE_NAME, MessengerPatches, DexSource.APK_WITH_SPLITS),
+     AppPatchInfo("Google (Discover)", "com.google.android.googlequicksearchbox", GoogleDiscoverPatches),
+     AppPatchInfo("Twitter/X", TWITTER_PACKAGE_NAME, TwitterPatches),
+     AppPatchInfo("Gmail", GMAIL_PACKAGE_NAME, GmailPatches),
+diff --git a/app/src/main/java/io/github/nexalloy/Helper.kt b/app/src/main/java/io/github/nexalloy/Helper.kt
+index 5d4d290..f73fffe 100644
+--- a/app/src/main/java/io/github/nexalloy/Helper.kt
++++ b/app/src/main/java/io/github/nexalloy/Helper.kt
+@@ -11,7 +11,7 @@ import app.morphe.extension.shared.Utils
+ import de.robv.android.xposed.XC_MethodHook
+ import de.robv.android.xposed.XposedBridge
+ import de.robv.android.xposed.XposedHelpers
+-import io.github.libxposed.api.XposedInterface.PRIORITY_DEFAULT
++import de.robv.android.xposed.callbacks.XCallback.PRIORITY_DEFAULT
+ import java.io.File
+ import java.lang.ref.WeakReference
+ import java.lang.reflect.InvocationTargetException
+@@ -260,3 +260,9 @@ fun Class<*>.enumValueOf(name: String): Enum<*>? {
+         null
+     }
+ }
++
++fun specialInvoker(method: java.lang.reflect.Method, specialCaller: Class<*>): java.lang.invoke.MethodHandle {
++    val lookup = java.lang.invoke.MethodHandles.privateLookupIn(specialCaller, java.lang.invoke.MethodHandles.lookup())
++    return lookup.findSpecial(method.declaringClass, method.name,
++        java.lang.invoke.MethodType.methodType(method.returnType, method.parameterTypes.toList()), specialCaller)
++}
+diff --git a/app/src/main/java/io/github/nexalloy/MainHook.kt b/app/src/main/java/io/github/nexalloy/MainHook.kt
+index 95ec7e7..8e0e186 100644
+--- a/app/src/main/java/io/github/nexalloy/MainHook.kt
++++ b/app/src/main/java/io/github/nexalloy/MainHook.kt
+@@ -6,16 +6,15 @@ import app.morphe.extension.shared.ResourceUtils
+ import app.morphe.extension.shared.Utils
+ import de.robv.android.xposed.XposedBridge
+ import de.robv.android.xposed.XposedHelpers
+-import io.github.libxposed.api.XposedInterface
+-import io.github.libxposed.api.XposedModule
+-import io.github.libxposed.api.XposedModuleInterface
+-import io.github.libxposed.api.XposedModuleInterface.PackageReadyParam
++import de.robv.android.xposed.IXposedHookLoadPackage
++import de.robv.android.xposed.IXposedHookZygoteInit
++import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
+ import io.github.nexalloy.common.UpdateChecker
+ import io.github.nexalloy.morphe.ResourceFinder
+ import io.github.nexalloy.morphe.resourceMappings
+ 
+-class MainHook : XposedModule() {
+-    lateinit var param: PackageReadyParam
++class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
++    lateinit var param: LoadPackageParam
+     lateinit var app: Application
+     var targetPackageName: String? = null
+ 
+@@ -25,12 +24,12 @@ class MainHook : XposedModule() {
+         return targetPackageName == packageName
+     }
+ 
+-    override fun onModuleLoaded(param: XposedModuleInterface.ModuleLoadedParam) {
+-        modulePath = moduleApplicationInfo.sourceDir
++    override fun initZygote(param: IXposedHookZygoteInit.StartupParam) {
++        modulePath = param.modulePath
+     }
+ 
+-    override fun onPackageReady(param: PackageReadyParam) {
+-        if (!param.isFirstPackage) return
++    override fun handleLoadPackage(param: LoadPackageParam) {
++        if (!param.isFirstApplication) return
+         if (!shouldHook(param.packageName)) return
+         this.param = param
+ 
+@@ -50,11 +49,11 @@ class MainHook : XposedModule() {
+             }
+ 
+             val patches = patchesByPackage[param.packageName] ?: return@inContext
+-            PatchExecutor(app, param, this).applyPatches(patches)
++            PatchExecutor(app, param).applyPatches(patches)
+         }
+     }
+ 
+-    private fun isReVancedPatched(param: PackageReadyParam): Boolean {
++    private fun isReVancedPatched(param: LoadPackageParam): Boolean {
+         return runCatching {
+             param.classLoader.loadClass("app.morphe.extension.shared.Utils")
+         }.isSuccess || runCatching {
+@@ -68,19 +67,15 @@ class MainHook : XposedModule() {
+ 
+ }
+ 
+-context(xposed: XposedInterface)
+-fun inContext(lpparam: PackageReadyParam, f: (Application) -> Unit) {
+-    val appClazz = XposedHelpers.findClass(lpparam.applicationInfo.className, lpparam.classLoader)
++fun inContext(lpparam: LoadPackageParam, f: (Application) -> Unit) {
++    val appClazz = XposedHelpers.findClass(lpparam.appInfo.className ?: Application::class.java.name, lpparam.classLoader)
+     appClazz.getMethod("onCreate").hookMethod {
+         before {
+             val app = it.thisObject as Application
+             Utils.setContext(app)
+             f(app)
+             if (modulePath.startsWith("/data/app/")) {
+-                val prefs = xposed.getRemotePreferences("prefs")
+-                if (!prefs.getBoolean("disable_auto_check_update", false)) {
+-                    UpdateChecker().hookNewActivity()
+-                }
++                UpdateChecker().hookNewActivity()
+             }
+         }
+     }
+diff --git a/app/src/main/java/io/github/nexalloy/PatchExecutor.kt b/app/src/main/java/io/github/nexalloy/PatchExecutor.kt
+index 5ff671a..1bb05ab 100644
+--- a/app/src/main/java/io/github/nexalloy/PatchExecutor.kt
++++ b/app/src/main/java/io/github/nexalloy/PatchExecutor.kt
+@@ -15,9 +15,9 @@ import app.morphe.extension.shared.Utils
+ import de.robv.android.xposed.XC_MethodHook
+ import de.robv.android.xposed.XposedBridge
+ import de.robv.android.xposed.XposedHelpers
+-import io.github.libxposed.api.XposedInterface
+-import io.github.libxposed.api.XposedInterface.Hooker
+-import io.github.libxposed.api.XposedModuleInterface
++import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
++import android.provider.Settings
++import java.security.MessageDigest
+ import io.github.nexalloy.BuildConfig.DEBUG
+ import io.github.nexalloy.morphe.Fingerprint
+ import org.luckypray.dexkit.DexKitBridge
+@@ -56,7 +56,7 @@ class Patch(
+     val run: PatchExecutor.() -> Unit
+ )
+ 
+-abstract class IHook(val xposed: XposedInterface) : XposedInterface by xposed {
++abstract class IHook {
+     abstract val classLoader: ClassLoader
+ 
+     fun DexMethod.hookMethod(callback: XC_MethodHook) {
+@@ -96,7 +96,6 @@ abstract class IHook(val xposed: XposedInterface) : XposedInterface by xposed {
+ 
+     fun DexField.toField() = getFieldInstance(classLoader)
+ 
+-    override fun getApiVersion(): Int = xposed.apiVersion
+ }
+ 
+ @Suppress("UNCHECKED_CAST")
+@@ -155,15 +154,14 @@ class DependedHookFailedException(
+ @SuppressLint("CommitPrefEdits")
+ class PatchExecutor(
+     val appContext: Application,
+-    val lpparam: XposedModuleInterface.PackageReadyParam,
+-    xposed: XposedInterface
+-) : IHook(xposed) {
++    val lpparam: LoadPackageParam
++) : IHook() {
+     override val classLoader = lpparam.classLoader
+ 
+     /**
+      * @see io.github.nexalloy.activity.AppPatchSettingsActivity.AppPatchSettingsFragment.onCreate
+      * */
+-    private val patchPreferences = xposed.getRemotePreferences(lpparam.packageName)
++    private val featureStatus = appContext.getSharedPreferences("nt_nexalloy_features", MODE_PRIVATE)
+ 
+     private lateinit var patches: Array<Patch>
+     private val appliedPatches = mutableSetOf<Patch>()
+@@ -181,10 +179,10 @@ class PatchExecutor(
+ 
+     private fun openDexKit() = when (dexSource) {
+         DexSource.CLASS_LOADER -> DexKitCacheBridge.create(lpparam.packageName, classLoader)
+-        DexSource.APK_PATH -> DexKitCacheBridge.create("", lpparam.applicationInfo.sourceDir)
++        DexSource.APK_PATH -> DexKitCacheBridge.create("", lpparam.appInfo.sourceDir)
+         DexSource.APK_WITH_SPLITS ->
+-            if (lpparam.applicationInfo.splitSourceDirs.isNullOrEmpty()) {
+-                DexKitCacheBridge.create("", lpparam.applicationInfo.sourceDir)
++            if (lpparam.appInfo.splitSourceDirs.isNullOrEmpty()) {
++                DexKitCacheBridge.create("", lpparam.appInfo.sourceDir)
+             } else {
+                 // The default class loader already holds base.apk + installed (non-isolated) splits.
+                 DexKitCacheBridge.create(lpparam.packageName, classLoader)
+@@ -195,6 +193,7 @@ class PatchExecutor(
+     
+     fun applyPatches(patches: Array<Patch>) {
+         this.patches = patches
++        featureStatus.edit().clear().apply()
+         if (dexSource == DexSource.CLASS_LOADER) {
+             runCatching { dexkit.close() }
+             dexGate = KatanaDexGate(this).also { it.start() }
+@@ -217,7 +216,30 @@ class PatchExecutor(
+     private var cacheChecked = false
+ 
+     internal val enabledPatchCount: Int
+-        get() = patches.count { patchPreferences?.getBoolean(it.name, it.use) ?: it.use }
++        get() = patches.count { isPatchEnabled(it) }
++
++    private fun isPatchEnabled(patch: Patch): Boolean {
++        if (patch.name.isBlank() || patch.name.startsWith("<")) return patch.use
++        val id = MessageDigest.getInstance("SHA-256").digest(patch.name.toByteArray(Charsets.UTF_8))
++            .take(8).joinToString("") { "%02x".format(it.toInt() and 0xff) }
++        val legacyId = if (lpparam.packageName == "com.facebook.orca") when (id) {
++            "44c5d15136b53f8a" -> "eba5226810e72065"
++            "153c8ac45a406e02" -> "8423baa5c94e4b60"
++            else -> null
++        } else null
++        return runCatching {
++            val fallback = legacyId?.let { Settings.Global.getInt(appContext.contentResolver,
++                "nt_nexalloy_feature_${lpparam.packageName}_$it", if (patch.use) 1 else 0) }
++                ?: if (patch.use) 1 else 0
++            Settings.Global.getInt(appContext.contentResolver,
++                "nt_nexalloy_feature_${lpparam.packageName}_$id", fallback) != 0
++        }.getOrDefault(patch.use)
++    }
++
++    private fun recordFeature(patch: Patch, status: String) {
++        if (patch.name.isNotBlank() && !patch.name.startsWith("<"))
++            featureStatus.edit().putString(patch.name, status).apply()
++    }
+ 
+     internal val outstandingPatchCount: Int
+         get() = enabledPatchCount - appliedPatches.size
+@@ -280,12 +302,16 @@ class PatchExecutor(
+             /**
+              * @see io.github.nexalloy.activity.AppPatchSettingsActivity.AppPatchSettingsFragment.onCreate
+              * */
+-            val isEnabled = patchPreferences?.getBoolean(hook.name, hook.use) ?: hook.use
+-            if (!isEnabled) return@forEach // Pref Key
++            if (!isPatchEnabled(hook)) {
++                recordFeature(hook, "disabled")
++                return@forEach
++            }
+             runCatching { hook.run(this) }.onFailure { err ->
++                recordFeature(hook, "error: ${err.javaClass.simpleName}")
+                 XposedBridge.log(err)
+                 failedPatches.add(hook)
+             }.onSuccess {
++                recordFeature(hook, "applied")
+                 appliedPatches.add(hook)
+             }
+         }
+@@ -295,7 +321,7 @@ class PatchExecutor(
+         cache.saveCache()
+         val success = failedPatches.isEmpty()
+         if (!success) {
+-            XposedBridge.log("${lpparam.applicationInfo.packageName} version: ${getAppVersion()}")
++            XposedBridge.log("${lpparam.appInfo.packageName} version: ${getAppVersion()}")
+             Utils.showToastLong("Error while apply following patches:\n${failedPatches.joinToString { it.name }}")
+         }
+     }
+@@ -303,7 +329,7 @@ class PatchExecutor(
+     private fun logDebugInfo() {
+         val success = failedPatches.isEmpty()
+         if (DEBUG) {
+-            XposedBridge.log("${lpparam.applicationInfo.packageName} version: ${getAppVersion()}")
++            XposedBridge.log("${lpparam.appInfo.packageName} version: ${getAppVersion()}")
+             if (success) {
+                 Utils.showToastLong("apply patches success")
+             }
+@@ -323,10 +349,15 @@ class PatchExecutor(
+ 
+     fun dependsOn(vararg patches: Patch) {
+         patches.forEach { hook ->
++            if (hook.name.isNotBlank() && !hook.name.startsWith("<") && !isPatchEnabled(hook)) {
++                recordFeature(hook, "disabled")
++                return@forEach
++            }
+             if (appliedPatches.contains(hook)) return@forEach
+             runCatching { (hook.run(this)) }.onFailure { err ->
+                 throw DependedHookFailedException(hook.name, err)
+             }.onSuccess {
++                recordFeature(hook, "applied")
+                 appliedPatches.add(hook)
+             }
+         }
+diff --git a/app/src/main/java/io/github/nexalloy/morphe/music/misc/settings/SettingsPatch.kt b/app/src/main/java/io/github/nexalloy/morphe/music/misc/settings/SettingsPatch.kt
+index 886b3f0..7c09399 100644
+--- a/app/src/main/java/io/github/nexalloy/morphe/music/misc/settings/SettingsPatch.kt
++++ b/app/src/main/java/io/github/nexalloy/morphe/music/misc/settings/SettingsPatch.kt
+@@ -20,6 +20,7 @@ import io.github.nexalloy.morphe.shared.misc.settings.preference.TextPreference
+ import io.github.nexalloy.morphe.shared.settings.preferences
+ import io.github.nexalloy.morphe.youtube.misc.settings.PreferenceFragmentCompat_addPreferencesFromResource
+ import io.github.nexalloy.patch
++import io.github.nexalloy.specialInvoker
+ 
+ val SettingsHook = patch(
+     description = "Adds settings for Morphe to YouTube Music.",
+@@ -67,7 +68,7 @@ val SettingsHook = patch(
+     val superOnCreateMethod =
+         Activity::class.java.getDeclaredMethod("onCreate", Bundle::class.java)
+ 
+-    val superOnCreate = xposed.getInvoker(superOnCreateMethod)
++    val superOnCreate = specialInvoker(superOnCreateMethod, ::googleApiActivityFingerprint.method.declaringClass)
+ 
+     ::googleApiActivityFingerprint.hookMethod {
+         before { param ->
+@@ -75,7 +76,7 @@ val SettingsHook = patch(
+             activity.setTheme(ResourceUtils.getStyleIdentifier("@style/Theme.YouTubeMusic"))
+             MusicActivityHook.initialize(activity)
+             activity.theme.applyStyle(R.style.ListDividerNull, true)
+-            superOnCreate.invokeSpecial(param.thisObject, *param.args)
++            superOnCreate.bindTo(activity).invokeWithArguments(param.args.toList())
+             param.result = Unit
+         }
+     }
+diff --git a/app/src/main/java/io/github/nexalloy/morphe/youtube/YoutubeHook.kt b/app/src/main/java/io/github/nexalloy/morphe/youtube/YoutubeHook.kt
+index 42bc046..f4bb9b3 100644
+--- a/app/src/main/java/io/github/nexalloy/morphe/youtube/YoutubeHook.kt
++++ b/app/src/main/java/io/github/nexalloy/morphe/youtube/YoutubeHook.kt
+@@ -2,7 +2,7 @@ package io.github.nexalloy.morphe.youtube
+ 
+ import android.app.Activity
+ import app.morphe.extension.shared.Utils
+-import io.github.libxposed.api.XposedInterface
++import de.robv.android.xposed.callbacks.XCallback
+ import io.github.nexalloy.ExtensionResourceHook
+ import io.github.nexalloy.addModuleAssets
+ import io.github.nexalloy.atLast
+@@ -62,7 +62,7 @@ fun insertLiteralOverride(id: Long, override: (Boolean) -> Boolean) {
+ 
+ val FeatureOverride = patch {
+     ::experimentalBooleanFeatureFlagFingerprint.hookMethod {
+-        priority = XposedInterface.PRIORITY_DEFAULT - 1
++        priority = XCallback.PRIORITY_DEFAULT - 1
+         after {
+             val id = it.args.atLast(2) as Long
+             val orig = it.result as Boolean
+diff --git a/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/settings/SettingsPatch.kt b/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/settings/SettingsPatch.kt
+index ca88c86..c7e66fa 100644
+--- a/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/settings/SettingsPatch.kt
++++ b/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/settings/SettingsPatch.kt
+@@ -20,6 +20,7 @@ import io.github.nexalloy.morphe.shared.misc.settings.preference.TextPreference
+ import io.github.nexalloy.morphe.shared.settings.preferences
+ import io.github.nexalloy.morphe.youtube.layout.buttons.overlay.PlayerOverlayButtonsSettings
+ import io.github.nexalloy.patch
++import io.github.nexalloy.specialInvoker
+ 
+ @Suppress("UNREACHABLE_CODE")
+ val SettingsHook = patch(
+@@ -46,14 +47,14 @@ val SettingsHook = patch(
+     }
+ 
+     val superOnCreateMethod = ::licenseActivitySuperOnCreate.method
+-    val superOnCreate = xposed.getInvoker(superOnCreateMethod)
++    val superOnCreate = specialInvoker(superOnCreateMethod, ::licenseActivityOnCreateFingerprint.method.declaringClass)
+ 
+     ::licenseActivityOnCreateFingerprint.hookMethod(object : XC_MethodReplacement() {
+         override fun replaceHookedMethod(param: XC_MethodHook.MethodHookParam) {
+             val activity = param.thisObject as Activity
+             YouTubeActivityHook.initialize(activity)
+             activity.theme.applyStyle(R.style.ListDividerNull, true)
+-            superOnCreate.invokeSpecial(param.thisObject, *param.args)
++            superOnCreate.bindTo(activity).invokeWithArguments(param.args.toList())
+         }
+     })
+ 
+diff --git a/app/src/main/java/io/github/nexalloy/revanced/messenger/InboxAdsPatch.kt b/app/src/main/java/io/github/nexalloy/revanced/messenger/InboxAdsPatch.kt
+new file mode 100644
+index 0000000..6b5a73b
+--- /dev/null
++++ b/app/src/main/java/io/github/nexalloy/revanced/messenger/InboxAdsPatch.kt
+@@ -0,0 +1,39 @@
++package io.github.nexalloy.revanced.messenger
++
++import app.morphe.extension.shared.Logger
++import io.github.nexalloy.hookMethod
++import io.github.nexalloy.patch
++
++private const val ADS_ITEM = "com.facebook.messaging.business.inboxads.common.InboxAdsItem"
++
++val HideMessengerAds = patch(
++    name = "Hide ads",
++    description = "Filters sponsored InboxAdsItem rows from Messenger inbox lists.",
++) {
++    val adClass = classLoader.loadClass(ADS_ITEM)
++    val builder = classLoader.loadClass("com.google.common.collect.ImmutableList\$Builder")
++    // Keep the builder's return type and ordinary messages intact.
++    builder.declaredMethods.filter { it.name == "add" && it.parameterTypes.contentEquals(arrayOf(Any::class.java)) }
++        .forEach { method -> method.hookMethod { before { if (adClass.isInstance(it.args[0])) it.result = it.thisObject } } }
++    java.util.ArrayList::class.java.getDeclaredMethod("add", Any::class.java).hookMethod {
++        before { if (adClass.isInstance(it.args[0])) it.result = false }
++    }
++    java.util.ArrayList::class.java.getDeclaredMethod("add", Int::class.javaPrimitiveType, Any::class.java).hookMethod {
++        before { if (adClass.isInstance(it.args[1])) it.result = null }
++    }
++    fun filtered(collection: Collection<*>): Collection<*> =
++        if (collection.any { adClass.isInstance(it) }) collection.filterNot { adClass.isInstance(it) } else collection
++    for (method in java.util.ArrayList::class.java.declaredMethods.filter { it.name == "addAll" }) {
++        method.hookMethod { before { param ->
++            val index = param.args.indexOfFirst { it is Collection<*> }
++            if (index >= 0) param.args[index] = filtered(param.args[index] as Collection<*>)
++        } }
++    }
++    builder.declaredMethods.filter { it.name == "addAll" && it.parameterTypes.contentEquals(arrayOf(Iterable::class.java)) }
++        .forEach { method -> method.hookMethod { before { param ->
++            val values = (param.args[0] as Iterable<*>).toList()
++            param.args[0] = filtered(values)
++        } } }
++    Logger.printInfo { "Messenger sponsored inbox list filters installed" }
++}
++
+diff --git a/app/src/main/java/io/github/nexalloy/revanced/messenger/MessengerHook.kt b/app/src/main/java/io/github/nexalloy/revanced/messenger/MessengerHook.kt
+index 44b448a..5a2f937 100644
+--- a/app/src/main/java/io/github/nexalloy/revanced/messenger/MessengerHook.kt
++++ b/app/src/main/java/io/github/nexalloy/revanced/messenger/MessengerHook.kt
+@@ -8,6 +8,7 @@ import io.github.nexalloy.revanced.messenger.privacy.StopAnalyticsUploads
+ import io.github.nexalloy.revanced.messenger.privacy.ViewStoriesAnonymously
+ 
+ val MessengerPatches = arrayOf<Patch>(
++    HideMessengerAds,
+     HideTypingIndicator,
+     HideReadReceipts,
+     AllowScreenshots,

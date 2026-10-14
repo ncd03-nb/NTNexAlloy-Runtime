@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feature_01bdcdd22652df88_title" formatted="false">Chặn phát hiện chụp màn hình</string>
+    <string name="feature_02be41ea8402576f_title" formatted="false">Xem tin nhắn đã thu hồi</string>
     <string name="feature_05da93fe49ae4f7f_title" formatted="false">Tắt tự mở lại Shorts</string>
     <string name="feature_0a6ace71917baef8_title" formatted="false">Ẩn quảng cáo Tin nhắn</string>
     <string name="feature_0bd2b26eeb2b2a2e_title" formatted="false">Ẩn quảng cáo</string>
@@ -9,6 +10,7 @@
     <string name="feature_13f1f144af732b83_title" formatted="false">Luôn hiện tùy chọn dịch</string>
     <string name="feature_14ab343e54fd4267_title" formatted="false">Tắt thu thập dữ liệu sử dụng</string>
     <string name="feature_1503802c3a07f7fe_title" formatted="false">Xóa theo dõi khỏi liên kết</string>
+    <string name="feature_153c8ac45a406e02_title" formatted="false">Ẩn trạng thái đang nhập</string>
     <string name="feature_15a95f62f956ab39_title" formatted="false">Tắt phân tích sử dụng</string>
     <string name="feature_1da911138bba51d6_title" formatted="false">Tắt Firebase Analytics</string>
     <string name="feature_1f5ede4eb721d277_title" formatted="false">Lưu ảnh chụp nhanh</string>
@@ -22,21 +24,26 @@
     <string name="feature_33edbb04dc9774bd_title" formatted="false">Giữ khả năng xem lại nội dung một lần</string>
     <string name="feature_3a78e3bf922d1f4a_title" formatted="false">Chặn yêu cầu quảng cáo video Adtima</string>
     <string name="feature_3ace5d17876792e3_title" formatted="false">Xem tin ẩn danh</string>
+    <string name="feature_3b2634eec789c6e6_title" formatted="false">Chặn tải dữ liệu phân tích</string>
     <string name="feature_3b4927a25b4c6865_title" formatted="false">Loại quảng cáo bảng tin</string>
     <string name="feature_3c9f71e1b4f4cc11_title" formatted="false">Tắt báo cáo lỗi Crashlytics</string>
     <string name="feature_3d98ae41b8c85042_title" formatted="false">Phụ đề tự động</string>
     <string name="feature_42639ef743177769_title" formatted="false">Khắc phục ảnh bị chặn theo vùng</string>
     <string name="feature_43e4efcb1e57753f_title" formatted="false">Tắt cơ sở dữ liệu phân tích</string>
     <string name="feature_440b7026f1b5b5e7_title" formatted="false">Tắt vị trí quảng cáo được tài trợ</string>
+    <string name="feature_44c5d15136b53f8a_title" formatted="false">Ẩn thông báo đã xem</string>
     <string name="feature_45ae2371d9d4409e_title" formatted="false">Bỏ thời gian chờ</string>
     <string name="feature_45ecbd6aa96b9433_title" formatted="false">SponsorBlock</string>
     <string name="feature_468ab769c500f30d_title" formatted="false">Ẩn bài hợp tác trả phí</string>
     <string name="feature_4a93b000f164ad4d_title" formatted="false">Ẩn quảng cáo trong tin</string>
     <string name="feature_4afac5539f44ea9e_title" formatted="false">Cho phép chụp màn hình</string>
+    <string name="feature_51c7f2c556ce1033_title" formatted="false">Ẩn trạng thái xem nội dung một lần</string>
+    <string name="feature_5274a6562c8fe4f2_title" formatted="false">Hiện vị trí máy chủ miễn phí</string>
     <string name="feature_592cb29e2edfc1d5_title" formatted="false">Tùy chỉnh codec video</string>
     <string name="feature_601921686bc0b8aa_title" formatted="false">Phân thư mục theo tài khoản</string>
     <string name="feature_6225a1943362eab2_title" formatted="false">Ẩn thành phần Shorts</string>
     <string name="feature_62765b401d20adaa_title" formatted="false">Ẩn lời mời Premium</string>
+    <string name="feature_631ca362cac9c37a_title" formatted="false">Cho phép chụp màn hình</string>
     <string name="feature_6429b81ab47d7db9_title" formatted="false">Tắt hộp thoại đồng ý cookie</string>
     <string name="feature_65b6155eb20fc446_title" formatted="false">Tắt phát hiện chụp màn hình</string>
     <string name="feature_6610521c8807e4e0_title" formatted="false">Ưu tiên ảnh chất lượng gốc</string>
@@ -56,7 +63,6 @@
     <string name="feature_7f73546ad1ccb219_title" formatted="false">Loại mạng quảng cáo Google khỏi Adtima</string>
     <string name="feature_82a2aec7ed6fae6e_title" formatted="false">Báo phiên sử dụng không quảng cáo</string>
     <string name="feature_8314196f06a898d2_title" formatted="false">Tắt theo dõi quảng cáo</string>
-    <string name="feature_8423baa5c94e4b60_title" formatted="false">Tắt trạng thái đang nhập</string>
     <string name="feature_879d2b00ed5f522c_title" formatted="false">Xem phát trực tiếp ẩn danh</string>
     <string name="feature_88b6acc28fa92296_title" formatted="false">Đổi trang mở đầu</string>
     <string name="feature_8efdfc940b20c35d_title" formatted="false">Ẩn quảng cáo Zalo Video</string>
@@ -67,6 +73,7 @@
     <string name="feature_9b2d700b942dc77d_title" formatted="false">Luôn cho phép sao lưu ảnh lên Google Drive</string>
     <string name="feature_a71ad34a99057fb6_title" formatted="false">Ẩn quảng cáo trên trang cá nhân</string>
     <string name="feature_a800a238a054c629_title" formatted="false">Xem tin không báo đã xem</string>
+    <string name="feature_a80830504e45ee83_title" formatted="false">Ẩn lời mời nâng cấp</string>
     <string name="feature_aa3adcb8a653576c_title" formatted="false">Ẩn thành phần giao diện</string>
     <string name="feature_ac7a41bf420611fc_title" formatted="false">Tải bài đăng</string>
     <string name="feature_acb9381ae04f0e7c_title" formatted="false">Giữ tin nhắn bị thu hồi</string>
@@ -81,6 +88,7 @@
     <string name="feature_c04b8390e5ae9322_title" formatted="false">Hiển thị URL đầy đủ</string>
     <string name="feature_c1326bc65323945a_title" formatted="false">Chặn yêu cầu quảng cáo Adtima</string>
     <string name="feature_c13547399f969ba7_title" formatted="false">Ẩn nút hành động video</string>
+    <string name="feature_c19101b5e2789e9e_title" formatted="false">Xem tin ẩn danh</string>
     <string name="feature_c1f02ade9d4bd30e_title" formatted="false">Bỏ giới hạn phát nền</string>
     <string name="feature_c39136e2b57c96f9_title" formatted="false">Gửi ảnh chụp nhanh từ thư viện</string>
     <string name="feature_c3ce4002050158a1_title" formatted="false">Hạn chế theo dõi quảng cáo Adtima</string>
@@ -89,6 +97,8 @@
     <string name="feature_cfb6374711a4e095_title" formatted="false">Tắt hiệu ứng làm mờ</string>
     <string name="feature_ch_protonvpn_android_14ab343e54fd4267_description" formatted="false">Chặn việc thu thập dữ liệu đo lường, phân tích và giám sát.</string>
     <string name="feature_ch_protonvpn_android_45ae2371d9d4409e_description" formatted="false">Bỏ thời gian chờ khi đổi máy chủ VPN.</string>
+    <string name="feature_ch_protonvpn_android_5274a6562c8fe4f2_description" formatted="false">Chỉ hiển thị các vị trí miễn phí trong mục Quốc gia và Tìm kiếm, đồng thời kết nối đến vị trí bạn chọn. Hoạt động độc lập với tùy chọn mở khóa VPN Plus.</string>
+    <string name="feature_ch_protonvpn_android_a80830504e45ee83_description" formatted="false">Ẩn cài đặt yêu cầu gói trả phí, biểu ngữ nâng cấp, mục khám phá VPN Plus và các ưu đãi.</string>
     <string name="feature_ch_protonvpn_android_b7423260493ab111_description" formatted="false">Hiển thị các tính năng của gói cao nhất, nhưng kết nối vẫn dùng máy chủ miễn phí để tương thích với máy chủ. Bỏ qua lời mời nâng cấp sau khi đăng nhập.</string>
     <string name="feature_com_alltrails_alltrails_f32b006cf82a6be2_description" formatted="false">Bật các tính năng ứng dụng bị giới hạn bởi gói thuê bao.</string>
     <string name="feature_com_facebook_katana_01bdcdd22652df88_description" formatted="false">Ngăn Facebook phát hiện việc chụp và ghi màn hình.</string>
@@ -102,8 +112,11 @@
     <string name="feature_com_facebook_katana_d80eb6de80b3b1b8_description" formatted="false">Dùng các hook rộng từ nguồn upstream để chặn trạng thái quảng cáo giữa video và các cờ biểu ngữ. Có thể làm lỗi một số màn hình; mặc định tắt.</string>
     <string name="feature_com_facebook_katana_db5dc7701e30e1d1_description" formatted="false">Loại các đoạn quảng cáo giữa video và thẻ tài trợ gắn trên video, bản phát lại trực tiếp.</string>
     <string name="feature_com_facebook_orca_0bd2b26eeb2b2a2e_description" formatted="false">Lọc các mục quảng cáo được tài trợ khỏi danh sách hộp thư Messenger.</string>
-    <string name="feature_com_facebook_orca_8423baa5c94e4b60_description" formatted="false">Buộc trạng thái gửi đi là đã ngừng nhập, giữ nguyên callback hộp thư để tránh treo ứng dụng.</string>
-    <string name="feature_com_facebook_orca_eba5226810e72065_description" formatted="false">Ngăn gửi xác nhận đã đọc, vẫn cập nhật hộp thư và xử lý thông báo trên máy.</string>
+    <string name="feature_com_facebook_orca_153c8ac45a406e02_description" formatted="false">Ngừng gửi trạng thái đang nhập trong trò chuyện thường và trò chuyện mã hóa đầu cuối.</string>
+    <string name="feature_com_facebook_orca_3b2634eec789c6e6_description" formatted="false">Chặn các dịch vụ tải dữ liệu phân tích của Messenger. Sự kiện vẫn được ghi trên thiết bị.</string>
+    <string name="feature_com_facebook_orca_44c5d15136b53f8a_description" formatted="false">Ngừng gửi thông báo đã xem trong trò chuyện thường và trò chuyện mã hóa đầu cuối. Cuộc trò chuyện đã mở có thể vẫn hiện chưa đọc trên máy này.</string>
+    <string name="feature_com_facebook_orca_631ca362cac9c37a_description" formatted="false">Cho phép chụp nội dung được bảo vệ, kể cả nội dung xem một lần và Quicksnap; chặn thông báo chụp màn hình gửi cho người kia.</string>
+    <string name="feature_com_facebook_orca_c19101b5e2789e9e_description" formatted="false">Xem tin mà không xuất hiện trong danh sách người xem. Tin đã mở có thể vẫn hiện chưa xem trên máy này.</string>
     <string name="feature_com_google_android_apps_youtube_music_0bd2b26eeb2b2a2e_description" formatted="false">Thêm tùy chọn ẩn quảng cáo toàn màn hình, lời mời Premium và quảng cáo video.</string>
     <string name="feature_com_google_android_apps_youtube_music_7032d3fa06981766_description" formatted="false">Ẩn tab nâng cấp trên thanh điều hướng.</string>
     <string name="feature_com_google_android_apps_youtube_music_7136044b85070174_description" formatted="false">Bật tùy chọn phát âm thanh không kèm video.</string>
@@ -131,8 +144,8 @@
     <string name="feature_com_google_android_youtube_c13547399f969ba7_description" formatted="false">Thêm tùy chọn ẩn các nút hành động video ở chế độ toàn màn hình và màn hình dọc.</string>
     <string name="feature_com_google_android_youtube_c1f02ade9d4bd30e_description" formatted="false">Bỏ giới hạn phát trong nền, bao gồm video dành cho trẻ em.</string>
     <string name="feature_com_google_android_youtube_d5fdc1af021e2d36_description" formatted="false">Cho phép tải video bằng ứng dụng tải xuống bên ngoài qua nút tải trong app hoặc nút hành động của trình phát.</string>
-    <string name="feature_com_google_android_youtube_eaec66e75461e787_description" formatted="false">Thêm tùy chọn thay ảnh thu nhỏ video bằng DeArrow hoặc ảnh chụp từ video.</string>
     <string name="feature_com_google_android_youtube_f7e371da0073f6a9_description" formatted="false">Thêm tùy chọn ẩn hoặc đổi thanh điều hướng dưới, như nút Shorts, và thanh công cụ phía trên.</string>
+    <string name="feature_com_google_android_youtube_fd87bdd122e74a5f_description" formatted="false">Thay ảnh thu nhỏ và tiêu đề video qua API DeArrow, hoặc dùng khung hình lấy từ video làm ảnh thu nhỏ.</string>
     <string name="feature_com_instagram_android_0bd2b26eeb2b2a2e_description" formatted="false">Ẩn quảng cáo chèn, nội dung tài trợ, bài hợp tác trả phí và quảng cáo Reels, Tin.</string>
     <string name="feature_com_instagram_android_1503802c3a07f7fe_description" formatted="false">Bỏ tham số theo dõi khỏi liên kết Instagram khi sao chép.</string>
     <string name="feature_com_instagram_android_1f5ede4eb721d277_description" formatted="false">Nhấn giữ ảnh chụp nhanh nhận được trong tin nhắn trực tiếp để lưu.</string>
@@ -141,6 +154,7 @@
     <string name="feature_com_instagram_android_33edbb04dc9774bd_description" formatted="false">Giữ khả năng truy cập nội dung xem một lần và nội dung được phép phát lại chưa hết hạn.</string>
     <string name="feature_com_instagram_android_3ace5d17876792e3_description" formatted="false">Ngăn gửi thông báo đã xem tin tới người đăng.</string>
     <string name="feature_com_instagram_android_4afac5539f44ea9e_description" formatted="false">Cho phép chụp màn hình trong tin nhắn trực tiếp, Tin và Reels bằng cách bỏ FLAG_SECURE.</string>
+    <string name="feature_com_instagram_android_51c7f2c556ce1033_description" formatted="false">Chặn thông báo đã xem và xem lại đối với nội dung được xem một hoặc hai lần.</string>
     <string name="feature_com_instagram_android_601921686bc0b8aa_description" formatted="false">Lưu từng tệp vào thư mục con mang tên tài khoản nguồn, thay vì gom tất cả vào một thư mục.</string>
     <string name="feature_com_instagram_android_879d2b00ed5f522c_description" formatted="false">Ngăn Instagram biết bạn đã xem phát trực tiếp bằng cách chặn yêu cầu cập nhật lượt xem.</string>
     <string name="feature_com_instagram_android_96f387e57f10a304_description" formatted="false">Chặn các yêu cầu liên quan đến ảnh chụp màn hình, xem một lần và báo đã xem tin qua TigonServiceLayer.</string>
@@ -208,6 +222,7 @@
     <string name="feature_com_zhiliaoapp_musically_eb8cc73b6d88d1a7_description" formatted="false">Bỏ màn hình buộc đăng nhập của TikTok để tiếp tục xem bảng tin khi chưa đăng nhập.</string>
     <string name="feature_com_zhiliaoapp_musically_edb21cae01aa6188_description" formatted="false">Hiện và bật Lưu video, ảnh, GIF hoặc Live Photo ngay cả khi nhà sáng tạo tắt tải xuống; giữ âm thanh trong video đã lưu.</string>
     <string name="feature_com_zhiliaoapp_musically_f409a9e08ccff091_description" formatted="false">Bỏ FLAG_SECURE ở các cửa sổ TikTok để chụp và ghi màn hình được cả ở trang bảo vệ như LIVE trả phí, thanh toán, xác minh; đồng thời bỏ chặn Circle to Search trên bảng tin.</string>
+    <string name="feature_com_zing_zalo_02be41ea8402576f_description" formatted="false">Giữ tin nhắn hiển thị trong cuộc trò chuyện khi người gửi thu hồi.</string>
     <string name="feature_com_zing_zalo_0a6ace71917baef8_description" formatted="false">Ẩn hàng quảng cáo Zinstant trong tab Tin nhắn và ngăn tải nội dung quảng cáo.</string>
     <string name="feature_com_zing_zalo_1da911138bba51d6_description" formatted="false">Tắt Google/Firebase Analytics trong Zalo và kết nối tới dịch vụ đo lường của Google Play. Không ảnh hưởng thông báo đẩy.</string>
     <string name="feature_com_zing_zalo_26b0a7dd69a1972f_description" formatted="false">Ngăn mở quảng cáo Adtima đã lưu sẵn và ngăn theo dõi lượt xem, lượt hiển thị.</string>
@@ -226,6 +241,7 @@
     <string name="feature_com_zing_zalo_9b2d700b942dc77d_description" formatted="false">Giữ tùy chọn Ảnh – đã sao lưu trên Google Drive ngay cả sau khi bản sao lưu cũ bị xóa.</string>
     <string name="feature_com_zing_zalo_b914361360a3723d_description" formatted="false">Ghi âm cuộc gọi thoại/video Zalo một đối một thành M4A trong Recordings/Zalo Call Recordings bằng bộ ghi ZRTC. Mặc định tắt. Việc ghi âm có thể cần sự đồng ý của các bên theo luật nơi bạn sống.</string>
     <string name="feature_com_zing_zalo_c1326bc65323945a_description" formatted="false">Ngăn SDK Adtima tải nội dung quảng cáo tích hợp, gói quảng cáo, biểu ngữ, toàn màn hình và quảng cáo nhận thưởng.</string>
+    <string name="feature_com_zing_zalo_c19101b5e2789e9e_description" formatted="false">Xem tin của bạn bè mà không xuất hiện trong danh sách người xem. Tin vẫn được đánh dấu đã xem trên máy này. Cảm xúc và trả lời vẫn được gửi.</string>
     <string name="feature_com_zing_zalo_c3ce4002050158a1_description" formatted="false">Báo cho SDK Adtima rằng theo dõi quảng cáo bị hạn chế và bỏ tra cứu mã quảng cáo Google. Bổ sung cho các mục chặn yêu cầu Adtima.</string>
     <string name="feature_com_zing_zalo_d2f6e287b7004698_description" formatted="false">Ngăn gửi trạng thái Đã xem trong chat riêng và nhóm, nhưng vẫn gửi trạng thái Đã nhận và nhận trạng thái từ người khác.</string>
     <string name="feature_com_zing_zalo_d8b53cf22bd2e108_description" formatted="false">Ngăn mục được tài trợ tải gói zinstant và báo lượt hiển thị. Tắt mục này trước nếu Nhật ký gặp lỗi.</string>
@@ -249,13 +265,12 @@
     <string name="feature_e33c325c6be50d46_title" formatted="false">Ẩn thông báo chụp màn hình</string>
     <string name="feature_e73edad01f00211d_title" formatted="false">Ẩn trạng thái đang nhập</string>
     <string name="feature_e99123e2f3525171_title" formatted="false">Ẩn trạng thái đã xem tin nhắn</string>
-    <string name="feature_eaec66e75461e787_title" formatted="false">Ảnh thu nhỏ thay thế</string>
     <string name="feature_eb8cc73b6d88d1a7_title" formatted="false">Bỏ yêu cầu đăng nhập</string>
     <string name="feature_eb92779edb37c484_title" formatted="false">Chặn quảng cáo và phân tích</string>
-    <string name="feature_eba5226810e72065_title" formatted="false">Tắt báo đã xem</string>
     <string name="feature_edb21cae01aa6188_title" formatted="false">Cho phép tải nội dung bị hạn chế</string>
     <string name="feature_f0be19e488114ece_title" formatted="false">Ẩn quảng cáo Nhật ký</string>
     <string name="feature_f32b006cf82a6be2_title" formatted="false">Bật tính năng Peak</string>
     <string name="feature_f409a9e08ccff091_title" formatted="false">Cho phép chụp màn hình mọi nơi</string>
     <string name="feature_f7e371da0073f6a9_title" formatted="false">Thanh điều hướng</string>
+    <string name="feature_fd87bdd122e74a5f_title" formatted="false">DeArrow</string>
 </resources>

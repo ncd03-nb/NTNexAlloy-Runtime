@@ -37,8 +37,8 @@ android {
         applicationId = "com.hma.nexalloy"
         minSdk = 33
         targetSdk = 37
-        versionCode = 10003
-        versionName = "1.1.1"
+        versionCode = 10004
+        versionName = "1.2.0"
     }
 
     buildTypes {

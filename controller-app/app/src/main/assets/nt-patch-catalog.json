@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.109-fa1ad110-compat6",
+  "version": "2.0.110-b61974f-compat1",
   "apps": [
     {
       "name": "Proton VPN",
@@ -9,7 +9,19 @@
         {
           "id": "b7423260493ab111",
           "name": "Unlock VPN Plus",
-          "description": "Spoofs the highest plan tier for all UI unlocks, while routing connections through free servers for server-side compatibility. Also skips the upgrade onboarding dialog after login.",
+          "description": "Spoofs the VPN Plus tier for all UI unlocks, while routing connections through free servers for server-side compatibility. Also skips the upgrade onboarding dialog after login.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "5274a6562c8fe4f2",
+          "name": "Show free server locations",
+          "description": "Lists only free server locations in Countries and Search and connects to the one you pick. Works with or without Unlock VPN Plus.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "a80830504e45ee83",
+          "name": "Hide upgrade promotions",
+          "description": "Hides settings that need a paid plan, upgrade banners, the Discover VPN Plus carousel and special offers.",
           "defaultEnabled": true
         },
         {
@@ -167,6 +179,18 @@
           "name": "Always allow Google Drive photo backup",
           "description": "Keeps the \"Photos – backed up on Google Drive\" option available even after your old backup was deleted. Zalo otherwise only offers it to accounts whose existing backup already used Drive.",
           "defaultEnabled": true
+        },
+        {
+          "id": "02be41ea8402576f",
+          "name": "View recalled messages",
+          "description": "Keeps messages visible in the chat when the sender recalls them.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "c19101b5e2789e9e",
+          "name": "View stories anonymously",
+          "description": "Watches friends' stories without adding you to their viewer list. The \"seen story\" packets are dropped before they reach the server; stories are still marked as watched on this device. Reactions and replies are still sent.",
+          "defaultEnabled": true
         }
       ]
     },
@@ -283,9 +307,9 @@
           "defaultEnabled": true
         },
         {
-          "id": "eaec66e75461e787",
-          "name": "Alternative thumbnails",
-          "description": "Adds options to replace video thumbnails using the DeArrow API or image captures from the video.",
+          "id": "fd87bdd122e74a5f",
+          "name": "DeArrow",
+          "description": "Adds options to replace video thumbnails and titles using the DeArrow API, or replace video thumbnails with image captures from the video.",
           "defaultEnabled": true
         },
         {
@@ -417,13 +441,19 @@
         {
           "id": "e99123e2f3525171",
           "name": "Ghost seen state",
-          "description": "Blocks DM read receipts from being sent. Chats you open still show as read on your phone.",
+          "description": "Blocks DM read receipts from being sent, while chats you open are still marked as read on this device.",
           "defaultEnabled": true
         },
         {
           "id": "e73edad01f00211d",
           "name": "Ghost typing status",
           "description": "Blocks typing indicator from being sent to the other party.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "51c7f2c556ce1033",
+          "name": "Ghost view once",
+          "description": "Prevents view-once / view-twice seen and replay notifications from being sent.",
           "defaultEnabled": true
         },
         {
@@ -663,6 +693,48 @@
       ]
     },
     {
+      "name": "Messenger",
+      "packageName": "com.facebook.orca",
+      "features": [
+        {
+          "id": "0bd2b26eeb2b2a2e",
+          "name": "Hide ads",
+          "description": "Filters sponsored InboxAdsItem rows from Messenger inbox lists.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "153c8ac45a406e02",
+          "name": "Hide typing indicator",
+          "description": "Stops sending your typing status in normal and end-to-end encrypted chats.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "44c5d15136b53f8a",
+          "name": "Hide read receipts",
+          "description": "Stops sending read receipts in normal and end-to-end encrypted chats. Chats you open may stay unread on this device.",
+          "defaultEnabled": false
+        },
+        {
+          "id": "631ca362cac9c37a",
+          "name": "Allow screenshots",
+          "description": "Lets you screenshot protected chat media, including view-once and Quicksnap, and stops the screenshot notice to the other person.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "c19101b5e2789e9e",
+          "name": "View stories anonymously",
+          "description": "Opens other people's stories without adding you to their viewer list. A story opened this way may still show as unseen on your device.",
+          "defaultEnabled": true
+        },
+        {
+          "id": "3b2634eec789c6e6",
+          "name": "Stop analytics uploads",
+          "description": "Blocks the background services Messenger's analytics logger uploads through. Events are still recorded on the device.",
+          "defaultEnabled": true
+        }
+      ]
+    },
+    {
       "name": "Google (Discover)",
       "packageName": "com.google.android.googlequicksearchbox",
       "features": [
@@ -747,30 +819,6 @@
       ]
     },
     {
-      "name": "Messenger",
-      "packageName": "com.facebook.orca",
-      "features": [
-        {
-          "id": "0bd2b26eeb2b2a2e",
-          "name": "Hide ads",
-          "description": "Filters sponsored InboxAdsItem rows from Messenger inbox lists.",
-          "defaultEnabled": true
-        },
-        {
-          "id": "eba5226810e72065",
-          "name": "Disable read receipts",
-          "description": "Stops outgoing read dispatch while retaining the local inbox update and notification handling.",
-          "defaultEnabled": true
-        },
-        {
-          "id": "8423baa5c94e4b60",
-          "name": "Disable typing status",
-          "description": "Forces outgoing typing state to stopped without cancelling the mailbox callback.",
-          "defaultEnabled": true
-        }
-      ]
-    },
-    {
       "name": "TikTok",
       "packageName": "com.zhiliaoapp.musically",
       "features": [
@@ -825,7 +873,7 @@
         {
           "id": "d07cb3a932c3a1af",
           "name": "Ghost mode",
-          "description": "Stops TikTok from reporting what you look at: story views, profile visits and the typing indicator. Your online status is unchanged.",
+          "description": "Stops TikTok from reporting what you look at: story views, profile visits, the typing indicator and which videos of people you follow you watched (their view history). Your online status is unchanged.",
           "defaultEnabled": true
         },
         {
@@ -927,7 +975,7 @@
         {
           "id": "d07cb3a932c3a1af",
           "name": "Ghost mode",
-          "description": "Stops TikTok from reporting what you look at: story views, profile visits and the typing indicator. Your online status is unchanged.",
+          "description": "Stops TikTok from reporting what you look at: story views, profile visits, the typing indicator and which videos of people you follow you watched (their view history). Your online status is unchanged.",
           "defaultEnabled": true
         },
         {

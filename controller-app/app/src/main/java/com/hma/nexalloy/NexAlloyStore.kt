@@ -40,8 +40,16 @@ object NexAlloyStore {
         return if (resource == 0) fallback else context.getString(resource)
     }
 
-    fun isFeatureEnabled(context: Context, packageName: String, feature: Feature): Boolean =
-        read(context, featureKey(packageName, feature.id), feature.defaultEnabled)
+    fun isFeatureEnabled(context: Context, packageName: String, feature: Feature): Boolean {
+        val legacyId = if (packageName == "com.facebook.orca") when (feature.id) {
+            "44c5d15136b53f8a" -> "eba5226810e72065"
+            "153c8ac45a406e02" -> "8423baa5c94e4b60"
+            else -> null
+        } else null
+        val fallback = legacyId?.let { read(context, featureKey(packageName, it), feature.defaultEnabled) }
+            ?: feature.defaultEnabled
+        return read(context, featureKey(packageName, feature.id), fallback)
+    }
 
     fun setFeatureEnabled(context: Context, packageName: String, feature: Feature, enabled: Boolean): Boolean =
         write(context, featureKey(packageName, feature.id), enabled)

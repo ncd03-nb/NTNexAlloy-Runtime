@@ -35,18 +35,20 @@ See [NOTICE.md](NOTICE.md) for detailed attribution and licensing boundaries.
 
 ## Current compatibility snapshot
 
-- Upstream default branch: `root`, commit `fa1ad1107638a5fd8d5b98e112b8d116b866938f` (2026-10-05)
-- Payload version: `2.0.109-fa1ad110-compat6` (`versionCode 109`, legacy framework entrypoint)
+- Upstream release: `v1.0` published 2026-10-14, APK commit `b61974fdea5b1b5a944657072c0a01d6426bb41e`.
+  The tag itself points to an older commit; the release APK identifies the pinned source.
+- Payload version: `2.0.110-b61974f-compat1` (`versionCode 110`, legacy framework entrypoint)
 - Runtime API: `1`
-- Android framework target: API 37
+- Android framework target: API 36/37
 - Architectures: `arm64-v8a`, `armeabi-v7a`
 - Google Photos is deliberately excluded because NT Manager already provides that feature.
 
-This snapshot is provisional. On ColorOS 16, Messenger 581.0.0.49.91 starts
-without the previously observed crash, but the user still observes outgoing read
-receipts with "Disable read receipts" enabled. An installed hook or an "applied"
-status does not prove that the server-side receipt was blocked. See
-[validation notes](docs/VALIDATION-20261007.md) for the current limits.
+The release adds upstream Messenger privacy hooks and updates Instagram and Proton VPN.
+The previous Messenger inbox-ad filter is retained. Legacy read-receipt and typing
+preferences fall back to their old keys until the user changes the new switch.
+An installed hook or an "applied" status does not prove that a server-side receipt
+was blocked. See the [previous validation notes](docs/VALIDATION-20261007.md) for
+the old integration limitations; current validation is recorded separately.
 
 ## Export smali
 
@@ -74,7 +76,7 @@ display text never changes the upstream-name hashes used by the framework.
 Regenerate the catalog and locale resources after updating the pinned source:
 
 ```powershell
-python scripts/export-feature-catalog.py --source <patched-upstream-checkout> --output controller-app/app/src/main/assets/nt-patch-catalog.json --version 2.0.109-fa1ad110-compat6 --resource-root controller-app/app/src/main/res --translations-dir controller-app/translations
+python scripts/export-feature-catalog.py --source <patched-upstream-checkout> --output controller-app/app/src/main/assets/nt-patch-catalog.json --version 2.0.110-b61974f-compat1 --resource-root controller-app/app/src/main/res --translations-dir controller-app/translations
 ```
 
 All public features must have a translation entry. Package-specific descriptions

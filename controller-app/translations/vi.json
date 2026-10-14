@@ -113,7 +113,17 @@
     "Fix Google login": ["Sửa đăng nhập Google", "Buộc dùng đăng nhập Google qua web. Chỉ cần khi APK được ký lại bằng LSPatch hoặc đóng gói lại khiến Google Play từ chối đăng nhập gốc."],
     "Hide CAPTCHA popups": ["Ẩn hộp thoại CAPTCHA khi duyệt", "Bỏ hộp thoại câu đố khi duyệt và báo đã đóng. Giữ nguyên xác minh tài khoản và đăng nhập; thao tác gây ra câu đố thường sẽ thất bại."],
     "Remove download watermark": ["Bỏ hình chìm khi tải", "Lưu video và ảnh không kèm hình chìm TikTok."],
-    "Allow restricted downloads": ["Cho phép tải nội dung bị hạn chế", "Hiện và bật Lưu video, ảnh, GIF hoặc Live Photo ngay cả khi nhà sáng tạo tắt tải xuống; giữ âm thanh trong video đã lưu."]
+    "Allow restricted downloads": ["Cho phép tải nội dung bị hạn chế", "Hiện và bật Lưu video, ảnh, GIF hoặc Live Photo ngay cả khi nhà sáng tạo tắt tải xuống; giữ âm thanh trong video đã lưu."],
+    "Show free server locations": ["Hiện vị trí máy chủ miễn phí", "Chỉ hiển thị các vị trí miễn phí trong mục Quốc gia và Tìm kiếm, đồng thời kết nối đến vị trí bạn chọn. Hoạt động độc lập với tùy chọn mở khóa VPN Plus."],
+    "Hide upgrade promotions": ["Ẩn lời mời nâng cấp", "Ẩn cài đặt yêu cầu gói trả phí, biểu ngữ nâng cấp, mục khám phá VPN Plus và các ưu đãi."],
+    "View recalled messages": ["Xem tin nhắn đã thu hồi", "Giữ tin nhắn hiển thị trong cuộc trò chuyện khi người gửi thu hồi."],
+    "View stories anonymously": ["Xem tin ẩn danh", "Xem tin mà không thêm bạn vào danh sách người xem."],
+    "DeArrow": ["DeArrow", "Thay ảnh thu nhỏ và tiêu đề video qua API DeArrow, hoặc dùng khung hình lấy từ video làm ảnh thu nhỏ."],
+    "Ghost view once": ["Ẩn trạng thái xem nội dung một lần", "Chặn thông báo đã xem và xem lại đối với nội dung được xem một hoặc hai lần."],
+    "Hide typing indicator": ["Ẩn trạng thái đang nhập", "Ngừng gửi trạng thái đang nhập trong trò chuyện thường và trò chuyện mã hóa đầu cuối."],
+    "Hide read receipts": ["Ẩn thông báo đã xem", "Ngừng gửi thông báo đã xem trong trò chuyện thường và trò chuyện mã hóa đầu cuối. Cuộc trò chuyện đã mở có thể vẫn hiện chưa đọc trên máy này."],
+    "Allow screenshots": ["Cho phép chụp màn hình", "Cho phép chụp nội dung được bảo vệ, kể cả nội dung xem một lần và Quicksnap; chặn thông báo chụp màn hình gửi cho người kia."],
+    "Stop analytics uploads": ["Chặn tải dữ liệu phân tích", "Chặn các dịch vụ tải dữ liệu phân tích của Messenger. Sự kiện vẫn được ghi trên thiết bị."]
   },
   "descriptionOverrides": {
     "com.google.android.youtube": {
@@ -138,7 +148,8 @@
       "Hide ads": "Loại các hàng quảng cáo được tài trợ Gmail hiển thị giữa các cuộc hội thoại."
     },
     "com.facebook.orca": {
-      "Hide ads": "Lọc các mục quảng cáo được tài trợ khỏi danh sách hộp thư Messenger."
+      "Hide ads": "Lọc các mục quảng cáo được tài trợ khỏi danh sách hộp thư Messenger.",
+      "View stories anonymously": "Xem tin mà không xuất hiện trong danh sách người xem. Tin đã mở có thể vẫn hiện chưa xem trên máy này."
     },
     "com.zhiliaoapp.musically": {
       "Disable telemetry": "Chặn ByteDance AppLog, AppsFlyer, báo cáo màn hình Firebase và báo cáo lỗi Npth/MonitorCrash. Khi bật, bảng tin Dành cho bạn không còn học từ nội dung bạn xem.",
@@ -147,6 +158,9 @@
     "com.ss.android.ugc.trill": {
       "Disable telemetry": "Chặn ByteDance AppLog, AppsFlyer, báo cáo màn hình Firebase và báo cáo lỗi Npth/MonitorCrash. Khi bật, bảng tin Dành cho bạn không còn học từ nội dung bạn xem.",
       "Sanitize sharing links": "Bỏ tham số theo dõi như utm_*, share_*, u_code, _r, _t khỏi liên kết TikTok trước khi chia sẻ hoặc sao chép."
+    },
+    "com.zing.zalo": {
+      "View stories anonymously": "Xem tin của bạn bè mà không xuất hiện trong danh sách người xem. Tin vẫn được đánh dấu đã xem trên máy này. Cảm xúc và trả lời vẫn được gửi."
     }
   }
 }
