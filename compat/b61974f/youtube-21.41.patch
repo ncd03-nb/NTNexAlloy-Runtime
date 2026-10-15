@@ -1,0 +1,142 @@
+diff --git a/app/src/main/java/io/github/nexalloy/morphe/youtube/layout/shortsnoresume/DisableShortsResumingOnStartupPatch.kt b/app/src/main/java/io/github/nexalloy/morphe/youtube/layout/shortsnoresume/DisableShortsResumingOnStartupPatch.kt
+index a077983..4a6e704 100644
+--- a/app/src/main/java/io/github/nexalloy/morphe/youtube/layout/shortsnoresume/DisableShortsResumingOnStartupPatch.kt
++++ b/app/src/main/java/io/github/nexalloy/morphe/youtube/layout/shortsnoresume/DisableShortsResumingOnStartupPatch.kt
+@@ -1,7 +1,7 @@
+ package io.github.nexalloy.morphe.youtube.layout.shortsnoresume
+ 
+ import app.morphe.extension.youtube.patches.DisableShortsResumingOnStartupPatch
+-import io.github.nexalloy.morphe.music.misc.playservice.versionCheckPatch
++import io.github.nexalloy.morphe.youtube.misc.playservice.VersionCheck
+ import io.github.nexalloy.morphe.shared.misc.settings.preference.SwitchPreference
+ import io.github.nexalloy.morphe.youtube.insertLiteralOverride
+ import io.github.nexalloy.morphe.youtube.misc.playservice.is_21_03_or_greater
+@@ -14,23 +14,22 @@ val DisableShortsResumingOnStartup = patch(
+     name = "Disable Shorts resuming on startup",
+     description = "Adds an option to disable Shorts from resuming on app startup when Shorts were last being watched.",
+ ) {
+-    dependsOn(versionCheckPatch)
++    dependsOn(VersionCheck)
+ 
+     PreferenceScreen.SHORTS.addPreferences(
+         SwitchPreference("morphe_disable_shorts_resuming_on_startup"),
+     )
+ 
+     if (is_21_03_or_greater) {
+-        (if (is_21_30_or_greater) UserWasInShortsEvaluateFingerprint
+-        else UserWasInShortsEvaluateLegacyFingerprint).hookMethod(
+-            scopedHook(
+-                UserWasInShortsEvaluateAnchorFingerprint.method
+-            ) {
+-                after {
+-                    it.result =
+-                        DisableShortsResumingOnStartupPatch.disableShortsResumingOnStartup(it.result as Boolean)
+-                }
+-            })
++        // Hook the boolean eligibility result itself. The old constructor-scoped
++        // call was inlined in 21.41; the two stable experiment IDs still uniquely
++        // identify this gate, without changing unrelated constructors.
++        UserWasInShortsEvaluateAnchorFingerprint.hookMethod {
++            after {
++                it.result = DisableShortsResumingOnStartupPatch
++                    .disableShortsResumingOnStartup(it.result as Boolean)
++            }
++        }
+     } else {
+         // TODO
+     }
+diff --git a/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/backgroundplayback/Fingerprints.kt b/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/backgroundplayback/Fingerprints.kt
+index bd2e703..4fde7e7 100644
+--- a/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/backgroundplayback/Fingerprints.kt
++++ b/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/backgroundplayback/Fingerprints.kt
+@@ -63,7 +63,26 @@ val backgroundPlaybackSettingsFingerprint = fingerprint {
+ }
+ 
+ val backgroundPlaybackSettingsSubFingerprint = findMethodDirect {
+-    backgroundPlaybackSettingsFingerprint().invokes.filter { it.returnTypeName == "boolean" }[1]
++    runCatching {
++        backgroundPlaybackSettingsFingerprint().invokes.filter { it.returnTypeName == "boolean" }[1]
++    }.getOrElse {
++        // 21.41 builds the label inside a merged Function<Boolean, Object>.
++        // Search only the branch leading to this resource literal. Other switch
++        // branches invoke unrelated boolean methods; Boolean.booleanValue is
++        // unboxing the function argument, not the category gate.
++        val label = fingerprint {
++            accessFlags(AccessFlags.PUBLIC, AccessFlags.FINAL)
++            returns("Ljava/lang/Object;")
++            parameters("Ljava/lang/Object;")
++            literal { prefBackgroundAndOfflineCategoryId }
++        }
++        label.instructions.takeWhile { it.literal != prefBackgroundAndOfflineCategoryId.toLong() }
++            .mapNotNull { it.methodRef }
++            .filter {
++                it.returnTypeName == "boolean" && it.paramTypes.isEmpty() &&
++                    it.declaredClass!!.name != "java.lang.Boolean"
++            }.distinctBy { it.descriptor }.single()
++    }
+ }
+ 
+ object KidsBackgroundPlaybackPolicyControllerFingerprint : Fingerprint(
+diff --git a/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/playertype/Fingerprints.kt b/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/playertype/Fingerprints.kt
+index e6cdfcf..2a76f86 100644
+--- a/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/playertype/Fingerprints.kt
++++ b/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/playertype/Fingerprints.kt
+@@ -14,7 +14,7 @@ import io.github.nexalloy.morphe.string
+ import org.luckypray.dexkit.query.enums.StringMatchType
+ import org.luckypray.dexkit.result.FieldUsingType
+ 
+-object PlayerTypeFingerprint : Fingerprint(
++private object LegacyPlayerTypeFingerprint : Fingerprint(
+     definingClass = "Lcom/google/android/apps/youtube/app/common/player/overlay/YouTubePlayerOverlaysLayout;",
+     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+     returnType = "V",
+@@ -23,6 +23,24 @@ object PlayerTypeFingerprint : Fingerprint(
+     }
+ )
+ 
++// 21.41 moved the enum setter from the overlays layout into the player view.
++// Resolve the enum by its stable names, never by its obfuscated class name.
++private object PlayerTypeEnumFingerprint : Fingerprint(
++    accessFlags = listOf(AccessFlags.STATIC, AccessFlags.CONSTRUCTOR),
++    strings = listOf("WATCH_WHILE_FULLSCREEN", "WATCH_WHILE_MINIMIZED", "INLINE_MINIMAL")
++)
++
++val PlayerTypeFingerprint = findMethodDirect {
++    runCatching { LegacyPlayerTypeFingerprint() }.getOrElse {
++        Fingerprint(
++            definingClass = "Lcom/google/android/apps/youtube/app/player/YouTubePlayerViewNotForReflection;",
++            accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
++            returnType = "V",
++            parameters = listOf(PlayerTypeEnumFingerprint().declaredClass!!.descriptor)
++        )()
++    }
++}
++
+ internal object ReelWatchPagerFingerprint : Fingerprint(
+     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+     returnType = "Landroid/view/View;",
+diff --git a/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/playertype/PlayerTypeHookPatch.kt b/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/playertype/PlayerTypeHookPatch.kt
+index 863d46f..a477fdf 100644
+--- a/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/playertype/PlayerTypeHookPatch.kt
++++ b/app/src/main/java/io/github/nexalloy/morphe/youtube/misc/playertype/PlayerTypeHookPatch.kt
+@@ -9,7 +9,7 @@ import io.github.nexalloy.patch
+ val PlayerTypeHook = patch(
+     description = "Hook to get the current player type and video playback state.",
+ ) {
+-    PlayerTypeFingerprint.hookMethod {
++    ::PlayerTypeFingerprint.hookMethod {
+         before { param ->
+             PlayerTypeHookPatch.setPlayerType(param.args[0] as Enum<*>)
+         }
+diff --git a/app/src/main/java/io/github/nexalloy/PatchExecutor.kt b/app/src/main/java/io/github/nexalloy/PatchExecutor.kt
+--- a/app/src/main/java/io/github/nexalloy/PatchExecutor.kt
++++ b/app/src/main/java/io/github/nexalloy/PatchExecutor.kt
+@@ -168,7 +168,7 @@
+     private val failedPatches = mutableListOf<Patch>()
+ 
+     // cache
+-    private val moduleRel = BuildConfig.COMMIT_HASH
++    private val moduleRel = BuildConfig.COMMIT_HASH + "-ntcompat2"
+     private var cache = SharedPrefCache(appContext)
+     private val dexSource = dexSourceByPackage[lpparam.packageName] ?: DexSource.APK_PATH
+ 

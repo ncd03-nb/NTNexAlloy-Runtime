@@ -92,7 +92,7 @@ are replaced. Renamed Messenger switches fall back to their old setting IDs
 when the new ID has no explicit value, consistently in controller and payload.
 
 Use the packaging/export procedure below, with cache version
-`2.0.110-b61974f-compat1`. All nine manifest entries, runtime pins, controller
+`2.0.110-b61974f-compat2`. All nine manifest entries, runtime pins, controller
 catalog, and toolbuild exports must be updated together. See
 [device validation](VALIDATION-20261014.md) for results and remaining limits.
 
@@ -144,3 +144,18 @@ The legacy adapter uses Android API 33+ `MethodHandles.privateLookupIn` and
 `findSpecial` for superclass lifecycle/touch calls. Reflection with
 `Method.invoke` dispatches virtually and re-enters the replacement hook, causing
 a settings ANR. Keep the special-call adapter for YouTube, Music, and swipe controls.
+
+## YouTube 21.41 compatibility (2026-10-16)
+
+After the legacy entrypoint patch, apply `compat/b61974f/youtube-21.41.patch`
+in the upstream root. This retains the old layout setter for older YouTube APKs
+and falls back to the player-view enum setter after the layout implementation
+changed. The background category lookup follows the new merged function and
+excludes Boolean unboxing; Shorts startup hooks the stable boolean eligibility
+gate instead of an inlined constructor call. The DexKit cache revision changes
+with these fingerprints, so successful results from an older payload are not reused.
+
+The privileged controller handles LOCKED_BOOT_COMPLETED and BOOT_COMPLETED.
+It seeds `nt_nexalloy_enabled=1` only when the global key does not exist. It never
+rewrites explicit zero or per-app/per-feature choices. Include the updated controller
+APK and its existing WRITE_SECURE_SETTINGS privapp allowlist in the ROM.

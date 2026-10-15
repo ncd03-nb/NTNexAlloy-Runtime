@@ -37,7 +37,7 @@ public final class NexAlloyRuntime {
     private static final String TAG = "NTNexAlloy";
     private static final String FRAMEWORK = "/system/framework/framework.jar";
     private static final String PAYLOAD_ENTRY = "ntmanager/NTNexAlloy.apk";
-    private static final String PAYLOAD_VERSION = "2.0.110-b61974f-compat1";
+    private static final String PAYLOAD_VERSION = "2.0.110-b61974f-compat2";
     private static final String RUNTIME_DIR = "ntnexalloy-" + PAYLOAD_VERSION;
     private static final String APP_SETTINGS_PREFIX = "nt_nexalloy_app_";
 
@@ -252,7 +252,7 @@ public final class NexAlloyRuntime {
     // Pinned with metadata/payload-manifest.sha256; never mix a new runtime with old assets.
     private static String expectedDigest(String entry) {
         switch (entry) {
-            case "ntmanager/NTNexAlloy.apk": return "55b9a4aaca701049f1456bf14756f4a2201762a8d2eda1e1cd06716ea0ba410c";
+            case "ntmanager/NTNexAlloy.apk": return "8f55fe5c979132b8849b9d5530951a7d50ab2febd82c916948bbafe9e0b41e64";
             case "ntmanager/arm64-v8a/libc++_shared.so": return "b5d97c38a728afe28d341cda3369f512d35eaf9c680c1b0563cd6a63e395230f";
             case "ntmanager/arm64-v8a/liblsplant.so": return "53eff56530dbd91cdfdee42d5c7b91e6479ef088b7a5906d6abf3e61e1055a7a";
             case "ntmanager/arm64-v8a/libaliuhook.so": return "61c62a44b2b05154ba7d1545c93e1a66bf875c1f7f82fbdba87b8d033d09176c";

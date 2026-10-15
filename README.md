@@ -37,7 +37,7 @@ See [NOTICE.md](NOTICE.md) for detailed attribution and licensing boundaries.
 
 - Upstream release: `v1.0` published 2026-10-14, APK commit `b61974fdea5b1b5a944657072c0a01d6426bb41e`.
   The tag itself points to an older commit; the release APK identifies the pinned source.
-- Payload version: `2.0.110-b61974f-compat1` (`versionCode 110`, legacy framework entrypoint)
+- Payload version: `2.0.110-b61974f-compat2` (`versionCode 110`, legacy framework entrypoint)
 - Runtime API: `1`
 - Android framework target: API 36/37
 - Architectures: `arm64-v8a`, `armeabi-v7a`
@@ -76,7 +76,7 @@ display text never changes the upstream-name hashes used by the framework.
 Regenerate the catalog and locale resources after updating the pinned source:
 
 ```powershell
-python scripts/export-feature-catalog.py --source <patched-upstream-checkout> --output controller-app/app/src/main/assets/nt-patch-catalog.json --version 2.0.110-b61974f-compat1 --resource-root controller-app/app/src/main/res --translations-dir controller-app/translations
+python scripts/export-feature-catalog.py --source <patched-upstream-checkout> --output controller-app/app/src/main/assets/nt-patch-catalog.json --version 2.0.110-b61974f-compat2 --resource-root controller-app/app/src/main/res --translations-dir controller-app/translations
 ```
 
 All public features must have a translation entry. Package-specific descriptions
