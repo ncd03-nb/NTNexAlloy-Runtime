@@ -6,6 +6,8 @@ package android.security.ntmanager;
 
 import android.app.Application;
 import android.content.Context;
+import android.net.Uri;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -26,7 +28,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
- * Loads the pinned NexAlloy XES payload directly from framework.jar.
+ * Loads only the signed installed original NexAlloy APK using the ROM engine.
  *
  * <p>The payload and native libraries are supplied by the ROM toolbuild under the
  * {@code ntmanager/} archive directory. This class deliberately contains no LSPosed or root
@@ -36,127 +38,140 @@ import java.util.zip.ZipFile;
 public final class NexAlloyRuntime {
     private static final String TAG = "NTNexAlloy";
     private static final String FRAMEWORK = "/system/framework/framework.jar";
-    private static final String PAYLOAD_ENTRY = "ntmanager/NTNexAlloy.apk";
-    private static final String PAYLOAD_VERSION = "2.0.110-b61974f-compat2";
+    private static final String PAYLOAD_ENTRY = "ntmanager/NTXposedEngine.dex";
+    private static final String PAYLOAD_VERSION = "original-apk-1";
     private static final String RUNTIME_DIR = "ntnexalloy-" + PAYLOAD_VERSION;
     private static final String APP_SETTINGS_PREFIX = "nt_nexalloy_app_";
+    private static final String ORIGINAL_MODULE = "io.github.chsbuffer.revancedxposed";
+    private static final String BRIDGE_ENTRY = "ntmanager/NTModernBridge.dex";
+    private static final String BRIDGE_DIGEST = "3ab1ca578f1a3f06f074ea05e1679b2a654fb5a5d3d878884c07bdc77deaaedf";
 
-    private static final Set<String> SUPPORTED_PACKAGES = new HashSet<>(Arrays.asList(
-            "com.alltrails.alltrails",
-            "com.facebook.katana",
-            "com.facebook.orca",
-            "com.google.android.gm",
-            "com.google.android.googlequicksearchbox",
-            "com.instagram.android",
-            "com.microblink.photomath",
-            "ch.protonvpn.android",
-            "com.reddit.frontpage",
-            "com.soundcloud.android",
-            "com.strava",
-            "com.instagram.barcelona",
-            "com.zhiliaoapp.musically",
-            "com.ss.android.ugc.trill",
-            "com.twitter.android",
-            "com.google.android.youtube",
-            "com.google.android.apps.youtube.music",
-            "com.zing.zalo"
-    ));
+    private static Class<?> settingsService;
     private static final Set<String> INITIALIZED = new HashSet<>();
 
     private NexAlloyRuntime() {
     }
 
+    /** Called only for the namespaced bridge protocol on the real SettingsProvider. */
+    public static Bundle providerCall(android.content.ContentProvider provider, String authority,
+            String method, String arg, Bundle extras) {
+        if (!"settings".equals(authority) || method == null || !method.startsWith("nt.nexalloy.")) return null;
+        Context context = provider.getContext();
+        if (context == null || !"com.android.providers.settings".equals(context.getPackageName()) ||
+                android.os.Process.myUid() % 100000 != 1000) return null;
+        try {
+            Class<?> backend;
+            synchronized (NexAlloyRuntime.class) {
+                if (settingsService == null) {
+                    File directory = new File(context.getCodeCacheDir(), RUNTIME_DIR);
+                    if (!directory.isDirectory() && !directory.mkdirs()) throw new IllegalStateException("Cannot create ROM service cache");
+                    File bridge = extract(directory, BRIDGE_ENTRY, "NTModernBridge.dex");
+                    ClassLoader loader = newDelegateLastClassLoader(bridge.getAbsolutePath(), null, context.getClassLoader());
+                    settingsService = Class.forName("com.nothingsvn.nexalloy.NexAlloyService", true, loader);
+                }
+                backend = settingsService;
+            }
+            return (Bundle) backend.getMethod("call", Context.class, String.class, String.class, Bundle.class)
+                    .invoke(null, context, method.substring("nt.nexalloy.".length()), arg, extras);
+        } catch (Throwable error) {
+            Throwable cause = unwrap(error);
+            if (cause instanceof SecurityException) throw (SecurityException) cause;
+            if (cause instanceof IllegalArgumentException) throw (IllegalArgumentException) cause;
+            throw new IllegalStateException("NexAlloy ROM service failed", cause);
+        }
+    }
+
     public static void init(Context context) {
-        if (context == null) {
-            return;
-        }
-
+        if (context == null) return;
         String packageName = context.getPackageName();
-        if (packageName == null || !SUPPORTED_PACKAGES.contains(packageName)) {
+        if (packageName == null || context.getApplicationInfo().uid % 100000 < 10000) return;
+        boolean moduleUi = ORIGINAL_MODULE.equals(packageName);
+        Bundle original;
+        try {
+            original = context.getContentResolver().call(Uri.parse("content://settings"), "nt.nexalloy.module", null, null);
+        } catch (Throwable unavailable) {
+            if (moduleUi) status(context, "ROM module service unavailable", unwrap(unavailable));
             return;
         }
-        if (Settings.Global.getInt(
-                context.getContentResolver(), APP_SETTINGS_PREFIX + packageName, 1) == 0) {
-            return;
-        }
-
+        if (original == null) return;
+        java.util.ArrayList<String> enabled = original.getStringArrayList("enabledScope");
+        if (!moduleUi && (enabled == null || !enabled.contains(packageName))) return;
         String processName = currentProcessName();
-        if (processName != null && !packageName.equals(processName)) {
-            status(context, "skip secondary process " + processName, null);
-            return;
-        }
-
-        status(context, "init requested for " + packageName, null);
-        synchronized (INITIALIZED) {
-            if (!INITIALIZED.add(packageName)) {
+        if (processName != null && !packageName.equals(processName)) return;
+        synchronized (INITIALIZED) { if (!INITIALIZED.add(packageName)) return; }
+        try {
+            if (moduleUi) {
+                // The original UI only needs the configuration Binder, not the native hook engine.
+                // In particular a fresh reinstall has no engine cache yet.
+                Bundle response = context.getContentResolver().call(Uri.parse("content://settings"),
+                        "nt.nexalloy.service", null, null);
+                if (response == null || response.getBinder("binder") == null)
+                    throw new IllegalStateException("No module service binder");
+                android.content.ContentProvider provider = (android.content.ContentProvider)
+                        Class.forName("io.github.libxposed.service.XposedProvider", true, context.getClassLoader())
+                                .getDeclaredConstructor().newInstance();
+                if (provider.call("SendBinder", null, response) == null)
+                    throw new IllegalStateException("Original APK rejected the service binder");
+                status(context, "Original APK connected to ROM service", null);
                 return;
             }
-        }
-
-        try {
-            File runtimeDir = new File(context.getCacheDir(), RUNTIME_DIR);
-            if (!runtimeDir.exists() && !runtimeDir.mkdirs()) {
-                throw new IllegalStateException("Cannot create runtime directory");
-            }
-
-            File payload = extract(runtimeDir, PAYLOAD_ENTRY, "NTNexAlloy.apk");
+            File directory = new File(context.getCodeCacheDir(), RUNTIME_DIR);
+            if (!directory.isDirectory() && !directory.mkdirs()) throw new IllegalStateException("Cannot create engine cache");
+            File engine = extract(directory, PAYLOAD_ENTRY, "NTXposedEngine.dex");
             String abi = is64Bit() ? "arm64-v8a" : "armeabi-v7a";
-            File cxx = extract(
-                    runtimeDir, "ntmanager/" + abi + "/libc++_shared.so", "libc++_shared.so");
-            File lsplant = extract(
-                    runtimeDir, "ntmanager/" + abi + "/liblsplant.so", "liblsplant.so");
-            File aliuhook = extract(
-                    runtimeDir, "ntmanager/" + abi + "/libaliuhook.so", "libaliuhook.so");
-            extract(runtimeDir, "ntmanager/" + abi + "/libdexkit.so", "libdexkit.so");
-            status(context, "payload extracted abi=" + abi, null);
-
-            ClassLoader appClassLoader = context.getClassLoader();
-            ClassLoader payloadClassLoader = newDelegateLastClassLoader(
-                    payload.getAbsolutePath(), runtimeDir.getAbsolutePath(), appClassLoader);
-            loadNative(payloadClassLoader, cxx, lsplant, aliuhook);
-            status(context, "native hook engine loaded by payload classloader", null);
-            status(context, "payload loader=" + payloadClassLoader.getClass().getName(), null);
-
-            Class<?> mainHookClass = Class.forName(
-                    "io.github.nexalloy.MainHook", true, payloadClassLoader);
-            Object mainHook = mainHookClass.getDeclaredConstructor().newInstance();
-            status(context, "MainHook created", null);
-
-            Class<?> startupParamClass = Class.forName(
-                    "de.robv.android.xposed.IXposedHookZygoteInit$StartupParam",
-                    true,
-                    payloadClassLoader);
-            Object startupParam = allocateInstance(startupParamClass);
-            setField(startupParam, "modulePath", payload.getAbsolutePath());
-            setField(startupParam, "startsSystemServer", Boolean.FALSE);
-            invokeSingleArg(
-                    mainHookClass, mainHook, "initZygote", startupParamClass, startupParam);
-            status(context, "initZygote completed", null);
-
-            Class<?> loadPackageParamClass = Class.forName(
-                    "de.robv.android.xposed.callbacks.XC_LoadPackage$LoadPackageParam",
-                    true,
-                    payloadClassLoader);
-            Object loadPackageParam = allocateInstance(loadPackageParamClass);
-            setField(loadPackageParam, "appInfo", context.getApplicationInfo());
-            setField(loadPackageParam, "classLoader", appClassLoader);
-            setField(loadPackageParam, "isFirstApplication", Boolean.TRUE);
-            setField(loadPackageParam, "packageName", packageName);
-            setField(loadPackageParam, "processName", processName == null ? packageName : processName);
-            status(context, "LoadPackageParam created from payload loader", null);
-            invokeSingleArg(
-                    mainHookClass,
-                    mainHook,
-                    "handleLoadPackage",
-                    loadPackageParamClass,
-                    loadPackageParam);
-            status(context, "load-package callback registered", null);
+            File cxx = extract(directory, "ntmanager/" + abi + "/libc++_shared.so", "libc++_shared.so");
+            File lsplant = extract(directory, "ntmanager/" + abi + "/liblsplant.so", "liblsplant.so");
+            File aliuhook = extract(directory, "ntmanager/" + abi + "/libaliuhook.so", "libaliuhook.so");
+            ClassLoader engineLoader = newDelegateLastClassLoader(engine.getAbsolutePath(), directory.getAbsolutePath(), context.getClassLoader());
+            File bridge = extract(directory, BRIDGE_ENTRY, "NTModernBridge.dex");
+            ClassLoader bridgeLoader = newDelegateLastClassLoader(bridge.getAbsolutePath(), directory.getAbsolutePath(), engineLoader);
+            Class<?> contract = Class.forName("com.nothingsvn.nexalloy.BridgeContract", true, bridgeLoader);
+            Bundle verified = (Bundle) contract.getMethod("inspectArchive", Context.class, Bundle.class).invoke(null, context, original);
+            Class<?> host = Class.forName("com.nothingsvn.nexalloy.ModuleHost", true, bridgeLoader);
+            File nativeDir = extractModuleNative(context, verified, abi);
+            loadNative(engineLoader, cxx, lsplant, aliuhook);
+            host.getMethod("attach", Context.class, Bundle.class, String.class).invoke(null, context, verified, nativeDir.getAbsolutePath());
+            status(context, "original APK ready version=" + verified.getString("versionName"), null);
         } catch (Throwable error) {
-            synchronized (INITIALIZED) {
-                INITIALIZED.remove(packageName);
-            }
-            status(context, "runtime attach failed for " + packageName, unwrap(error));
+            status(context, "original APK attach failed for " + packageName, unwrap(error));
+            // A partial native attach must not be retried in the same process.
         }
+    }
+
+    private static File extractModuleNative(Context context, Bundle module, String abi) throws Exception {
+        File apk = new File(module.getString("apk"));
+        String id = digest(apk);
+        File directory = new File(context.getCodeCacheDir(), "nt-original-" + id);
+        if (!directory.isDirectory() && !directory.mkdirs()) throw new IllegalStateException("Cannot create module native cache");
+        try (ZipFile archive = new ZipFile(apk)) {
+            java.util.Enumeration<? extends ZipEntry> entries = archive.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                String prefix = "lib/" + abi + "/";
+                if (!entry.getName().startsWith(prefix) || !entry.getName().endsWith(".so")) continue;
+                String name = entry.getName().substring(prefix.length());
+                if (name.contains("/") || name.contains("\\") || name.contains("..")) throw new SecurityException("Invalid module library name");
+                File target = new File(directory, name);
+                if (entry.getSize() < 1 || entry.getSize() > 100L * 1024 * 1024)
+                    throw new SecurityException("Invalid module library size");
+                String expected;
+                try (InputStream input = archive.getInputStream(entry)) { expected = digest(input); }
+                if (target.isFile() && expected.equals(digest(target))) continue;
+                File temporary = File.createTempFile("native-", ".tmp", directory);
+                try {
+                    try (InputStream input = archive.getInputStream(entry); FileOutputStream output = new FileOutputStream(temporary)) {
+                        temporary.setWritable(false, false);
+                        byte[] buffer = new byte[32768]; int count;
+                        while ((count = input.read(buffer)) >= 0) output.write(buffer, 0, count);
+                        output.getFD().sync();
+                    }
+                    if (temporary.length() != entry.getSize() || !expected.equals(digest(temporary)) || !temporary.renameTo(target))
+                        throw new IllegalStateException("Cannot publish module library");
+                    target.setReadable(true, true); target.setExecutable(true, true);
+                } finally { temporary.delete(); }
+            }
+        }
+        return directory;
     }
 
     private static void loadNative(
@@ -197,7 +212,7 @@ public final class NexAlloyRuntime {
 
     private static File extract(File directory, String entryName, String outputName)
             throws Exception {
-        String expected = expectedDigest(entryName);
+        String expected = BRIDGE_ENTRY.equals(entryName) ? BRIDGE_DIGEST : expectedDigest(entryName);
         File output = new File(directory, outputName);
         if (output.isFile() && expected.equals(digest(output))) {
             return output;
@@ -238,12 +253,15 @@ public final class NexAlloyRuntime {
     }
 
     private static String digest(File file) throws Exception {
-        MessageDigest hash = MessageDigest.getInstance("SHA-256");
         try (InputStream input = new FileInputStream(file)) {
-            byte[] buffer = new byte[32 * 1024];
-            int count;
-            while ((count = input.read(buffer)) != -1) hash.update(buffer, 0, count);
+            return digest(input);
         }
+    }
+
+    private static String digest(InputStream input) throws Exception {
+        MessageDigest hash = MessageDigest.getInstance("SHA-256");
+        byte[] buffer = new byte[32 * 1024]; int count;
+        while ((count = input.read(buffer)) != -1) hash.update(buffer, 0, count);
         StringBuilder hex = new StringBuilder(64);
         for (byte value : hash.digest()) hex.append(String.format("%02x", value & 0xff));
         return hex.toString();
@@ -252,15 +270,13 @@ public final class NexAlloyRuntime {
     // Pinned with metadata/payload-manifest.sha256; never mix a new runtime with old assets.
     private static String expectedDigest(String entry) {
         switch (entry) {
-            case "ntmanager/NTNexAlloy.apk": return "8f55fe5c979132b8849b9d5530951a7d50ab2febd82c916948bbafe9e0b41e64";
+            case "ntmanager/NTXposedEngine.dex": return "2b488bc44a04d3e74aa841464cb6df11f9b34935c739d5bab7cec995a2c97627";
             case "ntmanager/arm64-v8a/libc++_shared.so": return "b5d97c38a728afe28d341cda3369f512d35eaf9c680c1b0563cd6a63e395230f";
             case "ntmanager/arm64-v8a/liblsplant.so": return "53eff56530dbd91cdfdee42d5c7b91e6479ef088b7a5906d6abf3e61e1055a7a";
             case "ntmanager/arm64-v8a/libaliuhook.so": return "61c62a44b2b05154ba7d1545c93e1a66bf875c1f7f82fbdba87b8d033d09176c";
-            case "ntmanager/arm64-v8a/libdexkit.so": return "4b9dc6cca00a8342d1be2ee445c7a0c243451130d73ca29c08b2eda2efca8ae8";
             case "ntmanager/armeabi-v7a/libc++_shared.so": return "38331a1efcb446eb1a0db440a8db8f41fa4fb698d15c061ab8c491426531c2c0";
             case "ntmanager/armeabi-v7a/liblsplant.so": return "fc965c4d2de9137e49796aa4278b0281df54694e9b0f12c82b1899909b2508cd";
             case "ntmanager/armeabi-v7a/libaliuhook.so": return "fc545ee9c7c1b367e936973139da3db2b290e6e767fef332ca7bb0619982ef05";
-            case "ntmanager/armeabi-v7a/libdexkit.so": return "ec2de16dab436a1f2c7545b975abee63134597e076884f0ebe442c43e58dd253";
             default: throw new IllegalArgumentException("Unpinned NexAlloy asset: " + entry);
         }
     }

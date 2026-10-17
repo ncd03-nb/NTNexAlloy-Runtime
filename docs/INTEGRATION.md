@@ -1,161 +1,94 @@
-# Framework integration
+# Original APK integration
 
-## Archive layout
-
-The ROM build must place the pinned payload inside `framework.jar` using this layout:
+## Framework archive
 
 ```text
-ntmanager/NTNexAlloy.apk
+ntmanager/NTXposedEngine.dex
+ntmanager/NTModernBridge.dex
+ntmanager/NexAlloyXES.apk  # unchanged seed APK, not a system package
 ntmanager/arm64-v8a/libc++_shared.so
 ntmanager/arm64-v8a/liblsplant.so
 ntmanager/arm64-v8a/libaliuhook.so
-ntmanager/arm64-v8a/libdexkit.so
 ntmanager/armeabi-v7a/libc++_shared.so
 ntmanager/armeabi-v7a/liblsplant.so
 ntmanager/armeabi-v7a/libaliuhook.so
-ntmanager/armeabi-v7a/libdexkit.so
 ```
 
-The runtime extracts the ABI-specific files into the target application's cache directory and
-loads the payload with Android's `DelegateLastClassLoader`.
+Do not include NTNexAlloy.apk or a pinned DexKit library. The engine DEX may
+contain only `de.robv.android.xposed`, `external.org.apache.commons`, and
+`io.github.nexalloy.NTNativeLoader`. No modified module hook classes are allowed.
 
-The embedded legacy Xposed API shim must expose
-`XC_MethodHook.MethodHookParam.getObjectExtra(String)` and
-`setObjectExtra(String, Object)`. Facebook hooks use these methods to carry state from the before
-callback to the after callback. When the payload changes, increment `PAYLOAD_VERSION` even if the
-upstream APK versionCode is unchanged; otherwise existing app caches keep the previous payload.
+Place the unchanged official APK at the existing toolbuild path
+`app/NexAlloyXES/NexAlloyXES.apk`; its package is
+`io.github.chsbuffer.revancedxposed`, not `com.hma.nexalloy`. This upstream APK
+needs no custom privileged-permissions file. Do not copy it into app/priv-app.
+Embedding verifies the seed APK against release.properties and places its original
+bytes inside framework.jar, outside PackageManager's system package scan.
 
-## Initialization
+After boot completion, the ROM settings service installs that signed APK once
+through PackageInstaller into /data/app as an ordinary user app. A persistent
+marker in SettingsProvider device-protected preferences records a successful
+seed (or an existing/previously removed package). Later reboots and OTA updates
+never reinstall a user-removed module, replace an installed version, or downgrade
+it. A factory reset clears the marker and allows the initial seed again. Failed
+initial installation is logged and may retry after a later system-server restart.
+The installer runs on its own thread and does not delay boot. Users can uninstall
+normally and reinstall/update the official APK manually without changing ROM.
+The bridge and its preferences remain in ROM, independently of the removable UI.
 
-Call the runtime after a valid application `Context` is available:
+## Bootstrap and configuration
 
-```java
-if (context != null && Settings.Global.getInt(
-        context.getContentResolver(), "nt_nexalloy_enabled", 0) != 0) {
-    NexAlloyRuntime.init(context);
-}
-```
+Call `NexAlloyRuntime.init(context)` after the app Context is available and before
+Application.onCreate. Do not gate this call on the old controller Settings.Global
+keys. Runtime reads the signed APK's metadata/scope and limits hooks to its main
+target processes. Missing module/service fails closed without loading a legacy module.
 
-Wrap the call in a broad failure boundary so an unavailable or incompatible payload cannot abort
-application startup.
+Run `patch-provider-transport.py` against the decompiled framework tree. It adds a
+dispatch after Android's incoming-authority validation. Only `nt.nexalloy.*` calls
+on the real `com.android.providers.settings` provider are handled. Other calls
+keep their original route. The patch is idempotent and rejects an unknown layout.
 
-## Settings contract
+The original APK receives a Binder through libxposed's public `XposedProvider`
+`SendBinder` protocol. The module UI obtains this Binder directly from the ROM
+service before any native engine/cache extraction; a freshly reinstalled UI must
+not depend on target-app engine assets. Private helper/entrypoint names may be
+obfuscated by R8.
+Module entrypoints are read from `META-INF/xposed/java_init.list`.
 
-- Global switch: `nt_nexalloy_enabled`, default `0`.
-- Per-app switch: `nt_nexalloy_app_<packageName>`, default `1`.
-- Per-feature switch: `nt_nexalloy_feature_<packageName>_<id>`. The ID is the first
-  16 lowercase hex characters of SHA-256 of the UTF-8 upstream patch name.
-  The default is the source patch `use` value; internal helpers are not exposed.
-  `scripts/export-feature-catalog.py` generates the controller catalog from the
-  pinned patched source. The payload reads the same setting before applying a patch.
-  Changing a switch force-stops only that app so hooks are recreated on next launch.
-  The app-private `nt_nexalloy_features` preferences record applied/disabled/error
-  states without account identifiers or message content.
-  Public dependencies respect the same per-feature switches; they cannot enable
-  another public feature that the user disabled.
+The ROM service stores scope and preferences in SettingsProvider's device-protected
+private storage. It validates the original publisher certificate and caller UID
+before allowing configuration changes. A target app can read only its scoped
+preferences; cross-user access is rejected. Certificate/package discovery uses
+the host identity, while authorization retains the original Binder caller UID.
+No NTManager or custom controller component is used.
 
-The supported-package allowlist is compiled into `NexAlloyRuntime`. Update the controller app and
-runtime together when changing that list.
+Preference changes restart the affected target. Replacing the module APK restarts
+scoped targets so their next process loads the new sourceDir, entrypoint and
+APK-specific native cache. Hook replacement inside a live process is not attempted.
 
-## Updating upstream
+## Build
 
-1. Pin a release or default-branch commit of `gnadgnaoh/NexAlloy-XES`.
-2. Review its GPL source changes and supported application list.
-3. Build or obtain the release artifacts from that release.
-4. Update the payload version and runtime directory in `NexAlloyRuntime.java`.
-5. Update `metadata/release.properties` and regenerate the SHA-256 manifest.
-6. Export smali and run the complete framework/services patcher on the target ROM framework.
-7. Test on the matching ROM before publishing an OTA/toolbuild update.
+Use `build-modern-bridge.py --help` for the Android SDK, official libxposed API and
+interface 102 classes.jar, compile-only legacy API 82, and D8 arguments. The script
+updates the bridge digest in Java and metadata. Keep Apache-2.0 dependency notices
+with redistributed bridge assets.
 
-The update is intentionally ROM-coupled; this project does not implement hot replacement of a
-framework-resident hook payload.
+Validate/package the engine with `package-engine.py`, export runtime smali, and
+sync the identical runtime/bridge/manifest across all toolbuild variants. Embedding
+must reject mismatched hashes and delete obsolete legacy payload/DexKit entries
+from already patched frameworks. A stock framework needs the provider dispatch
+as well as the application initialization hook.
 
+Compatible module updates require only the original APK. A future module requiring
+an unsupported API, ABI or engine capability may still require an engine update.
+Class-initializer hooks and remote module files are not implemented. The current
+upstream primarily uses the legacy hook API plus modern preferences/invokers;
+the adapter is not advertised as a general-purpose replacement for libxposed.
 
-## Release snapshot b61974f (2026-10-14)
+## Device testing
 
-The latest `v1.0` release APK identifies commit
-`b61974fdea5b1b5a944657072c0a01d6426bb41e` and versionCode 110. The tag reference
-itself still points to the older versionCode 103 source; do not build that tag.
-The release commit and root commit `6b188252e1009b36125bdf7f2bf616c4427cb099`
-have identical source trees. APK provenance is recorded in `metadata/release.properties`.
-
-Apply `compat/b61974f/legacy-entrypoint.patch` to the release checkout and
-`compat/b61974f/legacy-swipe.patch` inside its pinned `morphe-patches` submodule.
-This ports the modern Xposed entrypoint to the embedded legacy engine, keeps
-superclass dispatch through `MethodHandles`, and connects feature switches to
-`Settings.Global`. Build the patched source; the unmodified release APK requires
-modern libxposed and cannot be embedded directly in this runtime.
-
-The release supplies Messenger privacy hooks. Only the existing NT Messenger
-inbox-ad filter is carried forward; the old read-receipt/typing implementations
-are replaced. Renamed Messenger switches fall back to their old setting IDs
-when the new ID has no explicit value, consistently in controller and payload.
-
-Use the packaging/export procedure below, with cache version
-`2.0.110-b61974f-compat2`. All nine manifest entries, runtime pins, controller
-catalog, and toolbuild exports must be updated together. See
-[device validation](VALIDATION-20261014.md) for results and remaining limits.
-
-## Historical default-branch snapshot fa1ad110
-
-The tested snapshot is pinned by full commit in `metadata/release.properties`.
-Its APK versionCode remains 109 upstream; the runtime cache version includes
-`fa1ad110-compat6` to prevent old extracted APK/native files from being reused.
-`PatchExecutor` also keys its DexKit cache by the upstream commit hash.
-
-Apply `compat/fa1ad110/legacy-entrypoint.patch` to the upstream checkout and
-`legacy-swipe.patch` inside its pinned `morphe-patches` submodule before building.
-The patches preserve the new split-APK DexKit path and updated YouTube fingerprint.
-The snapshot references Messenger sources absent from that commit. The adapter adds
-its own Messenger implementation for sponsored inbox rows, outgoing read dispatch,
-and outgoing typing state. Fingerprints were inspected against Messenger 581.0.0.49.91.
-Messenger is included in both the controller and framework allowlists.
-
-Build with `gradlew :app:assembleRelease`. Assemble only the legacy namespaces from
-the previous pinned payload (`de/robv/android/xposed`, `external/org/apache/commons`,
-and `io/github/nexalloy/NTNativeLoader.smali`) into a separate DEX using smali API 37.
-Do not copy old app classes into the new payload. `scripts/package-payload.py` rejects
-unexpected shim namespaces and duplicate classes, takes DexKit native libraries from
-the exact new APK, and writes SHA-256 hashes for all nine framework assets.
-
-```powershell
-python scripts/package-payload.py --upstream-apk <unsigned-release.apk> --shim-dex <compat-shim.dex> --payload-dir <toolbuild-payload/ntmanager> --manifest <toolbuild-payload/payload-manifest.sha256>
-```
-
-Copy the manifest and release metadata together. The Xiaomi toolbuild runs
-`embed-nexalloy.py --framework-tree <decoded-framework>` before assembling the JAR.
-That step checks all nine hashes and requires a matching runtime cache version.
-For a device test, pull the currently running framework first, retain its assistant
-patches, update its existing runtime class, and add the verified assets. Keep a backup.
-
-When testing through a KernelSU module, target apps must have **Unmount modules**
-disabled so `/system/framework/framework.jar` resolves to the patched archive.
-The app does not need root permission. Force-stop only the test app before each retry.
-
-The runtime pins the SHA-256 digest of every embedded APK/native library and checks
-cached files before loading them. If an app sees original ROM assets through its
-mount namespace, initialization stops before any native library is loaded. Update
-`expectedDigest` in both runtime source copies from `payload-manifest.sha256` before
-exporting smali after a payload update. The embed helper rejects mismatched pins.
-Cache versions must also change when the adapter code changes. A versioned cache
-directory alone does not prove that it contains the expected files.
-
-The legacy adapter uses Android API 33+ `MethodHandles.privateLookupIn` and
-`findSpecial` for superclass lifecycle/touch calls. Reflection with
-`Method.invoke` dispatches virtually and re-enters the replacement hook, causing
-a settings ANR. Keep the special-call adapter for YouTube, Music, and swipe controls.
-
-## YouTube 21.41 compatibility (2026-10-16)
-
-After the legacy entrypoint patch, apply `compat/b61974f/youtube-21.41.patch`
-in the upstream root. This retains the old layout setter for older YouTube APKs
-and falls back to the player-view enum setter after the layout implementation
-changed. The background category lookup follows the new merged function and
-excludes Boolean unboxing; Shorts startup hooks the stable boolean eligibility
-gate instead of an inlined constructor call. The DexKit cache revision changes
-with these fingerprints, so successful results from an older payload are not reused.
-
-The privileged controller handles LOCKED_BOOT_COMPLETED and BOOT_COMPLETED.
-It seeds `nt_nexalloy_enabled=1` only when the global key does not exist. It never
-rewrites explicit zero or per-app/per-feature choices. Include the updated controller
-APK and its existing WRITE_SECURE_SETTINGS privapp allowlist in the ROM.
+Pull the currently running framework as the baseline. Preserve unrelated patches.
+For temporary bind mounts, set owner 0:0, mode 0644, SELinux system_file before
+restarting Android. App root-manager profiles must expose the mounted framework
+to the original module, SettingsProvider and target apps. Root is not required
+by those apps. A temporary test mount does not survive a full reboot.

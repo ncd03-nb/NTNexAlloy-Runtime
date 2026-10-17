@@ -42,3 +42,11 @@ ownership of upstream patches, hook implementations, native libraries, branding,
 The upstream projects credit and/or depend on projects including DexKit, LSPlant, AliuHook,
 Morphe, and ReVanced. Their own licenses and notices apply. Because this repository does not
 redistribute those binaries, consult the upstream repositories for the authoritative license set.
+
+## Original APK bridge
+
+The original-only ROM bridge uses libxposed API and interface 102.0.0, licensed
+under Apache License 2.0 by the libxposed contributors. Source projects:
+https://github.com/libxposed/api and https://github.com/libxposed/service.
+The full license is in `metadata/LICENSE-libxposed.txt` and is embedded with the
+bridge by the toolbuilds. No changes are made to the signed upstream module APK.

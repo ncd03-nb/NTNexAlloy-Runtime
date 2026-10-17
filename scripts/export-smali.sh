@@ -29,7 +29,7 @@ mkdir -p "$WORK/classes" "$OUT"
 
 javac -source 11 -target 11 -classpath "$ANDROID_JAR" -d "$WORK/classes" "$SOURCE"
 java -cp "$D8_JAR" com.android.tools.r8.D8 \
-  --min-api 36 \
+  --min-api 33 \
   --output "$WORK" \
   "$WORK/classes/android/security/ntmanager/NexAlloyRuntime.class"
 java -jar "$BAKSMALI" disassemble "$WORK/classes.dex" -o "$OUT"

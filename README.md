@@ -1,136 +1,40 @@
 # NTNexAlloy Runtime
 
-Open-source Android framework adapter for loading a pinned NexAlloy XES payload directly from
-`/system/framework/framework.jar`, without requiring an LSPosed manager or root service at
-runtime.
+ROM-integrated engine for the unmodified official [NexAlloy-XES APK](https://github.com/gnadgnaoh/NexAlloy-XES).
+Install an upstream APK update to update app hooks; the framework does not need to
+be rebuilt for a compatible module release. The original APK owns the feature UI. It is installed once as a removable user
+app; uninstalling it does not make the ROM restore it on later boots.
 
-This repository contains the NothingsVN runtime adapter, the standalone NexAlloy XES controller
-app, and integration documentation. It does **not** contain NexAlloy's hook payload, native
-libraries, patches, or other upstream binaries. Obtain those artifacts from the upstream projects
-and comply with their licenses.
+There is no custom NexAlloy controller APK in the ROM and no dependency on NTManager.
+The historical `controller-app/` and `compat/` sources document the retired
+integration and are not packaged by current toolbuilds.
 
-## Upstream projects and authors
+## Runtime
 
-- **Original project:** [NexAlloy/NexAlloy](https://github.com/NexAlloy/NexAlloy), created and
-  maintained by **ChsBuffer** ([@chsbuffer](https://github.com/chsbuffer)).
-- **XES fork used by this integration:**
-  [gnadgnaoh/NexAlloy-XES](https://github.com/gnadgnaoh/NexAlloy-XES), maintained by
+- `src/`: framework bootstrap, signed APK discovery, cache verification and native loader.
+- `modern-src/`: API adapter and ROM settings service.
+- `shared-src/`: upstream certificate, metadata and IPC contract.
+- `scripts/build-modern-bridge.py`: builds API/IPC DEX from libxposed API/interface 102.
+- `scripts/package-engine.py`: validates the 63-class legacy API/native loader shim.
+- `scripts/patch-provider-transport.py`: adds the namespaced settings service dispatch.
+- `metadata/`: engine asset pins and the initial unchanged upstream APK provenance.
+
+The engine/API shim and six ABI libraries are fixed in framework.jar. The bundled
+original APK is only a first-boot seed outside the system app scan. Active module
+hook code and DexKit come from the installed original APK. There is no legacy
+modified module fallback and no simultaneous second hook payload.
+
+See [integration](docs/INTEGRATION.md) and [validation](docs/INDEPENDENT-UPDATES.md).
+
+## Upstream authors and licensing
+
+- Original project: [NexAlloy/NexAlloy](https://github.com/NexAlloy/NexAlloy),
+  **ChsBuffer** ([@chsbuffer](https://github.com/chsbuffer)).
+- XES fork: [gnadgnaoh/NexAlloy-XES](https://github.com/gnadgnaoh/NexAlloy-XES),
   **XES SEX** ([@gnadgnaoh](https://github.com/gnadgnaoh)).
-- The upstream history also includes work by **Fioren**
-  ([@FiorenMas](https://github.com/FiorenMas)) and **Moeta Yuko**
-  ([@moetayuko](https://github.com/moetayuko)).
+- Upstream history also credits Fioren and Moeta Yuko.
 
-See [NOTICE.md](NOTICE.md) for detailed attribution and licensing boundaries.
-
-## What is open here
-
-- `NexAlloyRuntime.java`: process filter, per-app switches, payload extraction, class-loader setup,
-  native loader invocation, and Xposed callback bridge.
-- `controller-app/`: standalone `com.hma.nexalloy` Android app that owns the global and per-app
-  runtime controls formerly hosted by NT Manager, plus per-feature app dialogs.
-- `scripts/export-smali.sh`: reproducible Java → DEX → smali export for ROM toolbuilds.
-- `docs/INTEGRATION.md`: framework and payload layout contract.
-- `metadata/payload-manifest.sha256`: hashes of the tested pinned payload, without redistributing
-  the payload itself.
-
-## Current compatibility snapshot
-
-- Upstream release: `v1.0` published 2026-10-14, APK commit `b61974fdea5b1b5a944657072c0a01d6426bb41e`.
-  The tag itself points to an older commit; the release APK identifies the pinned source.
-- Payload version: `2.0.110-b61974f-compat2` (`versionCode 110`, legacy framework entrypoint)
-- Runtime API: `1`
-- Android framework target: API 36/37
-- Architectures: `arm64-v8a`, `armeabi-v7a`
-- Google Photos is deliberately excluded because NT Manager already provides that feature.
-
-The release adds upstream Messenger privacy hooks and updates Instagram and Proton VPN.
-The previous Messenger inbox-ad filter is retained. Legacy read-receipt and typing
-preferences fall back to their old keys until the user changes the new switch.
-An installed hook or an "applied" status does not prove that a server-side receipt
-was blocked. See the [previous validation notes](docs/VALIDATION-20261007.md) for
-the old integration limitations; current validation is recorded separately.
-
-## Export smali
-
-Requirements: JDK 11+, Android SDK with a platform `android.jar` and D8, plus a baksmali fat JAR.
-
-```bash
-export ANDROID_SDK_ROOT=/path/to/android-sdk
-export BAKSMALI_JAR=/path/to/baksmali-fat.jar
-bash scripts/export-smali.sh
-```
-
-The generated file is written to:
-
-```text
-build/smali/android/security/ntmanager/NexAlloyRuntime.smali
-```
-
-## Build the standalone controller
-
-Tap an installed app row to open individual feature switches. The adjacent app
-switch still enables or disables that app. Feature titles and descriptions follow Android's system locale:
-Vietnamese resources are included, with English as the default fallback. Localized
-display text never changes the upstream-name hashes used by the framework.
-
-Regenerate the catalog and locale resources after updating the pinned source:
-
-```powershell
-python scripts/export-feature-catalog.py --source <patched-upstream-checkout> --output controller-app/app/src/main/assets/nt-patch-catalog.json --version 2.0.110-b61974f-compat2 --resource-root controller-app/app/src/main/res --translations-dir controller-app/translations
-```
-
-All public features must have a translation entry. Package-specific descriptions
-remain separate; the resource keep file preserves dynamically resolved strings in
-release builds. Add future translations to `controller-app/translations/<locale>.json`
-and the corresponding Android UI strings under `values-<locale>`.
-
-The controller targets Android 13+ and must be installed as a privileged system app to write the
-shared `Settings.Global` contract without a development-time ADB grant.
-
-```powershell
-cd controller-app
-$env:HMA_KEYSTORE_PATH = "C:\path\to\release.jks"
-$env:HMA_KEYSTORE_PASSWORD = "..."
-$env:HMA_KEY_ALIAS = "..."
-$env:HMA_KEY_PASSWORD = "..."
-.\gradlew.bat clean :app:assembleRelease --no-daemon
-```
-
-ROM placement:
-
-```text
-/system/priv-app/NexAlloyXES/NexAlloyXES.apk
-/system/etc/permissions/com.hma.nexalloy.xml
-```
-
-## Important
-
-- This is an independent ROM integration adapter, not an official NexAlloy project.
-- Do not report adapter-specific issues to NexAlloy, Morphe, ReVanced, or their developers.
-- The global enable key is `Settings.Global.nt_nexalloy_enabled`.
-- Per-app keys use `Settings.Global.nt_nexalloy_app_<packageName>` and default to enabled.
-- A new upstream release does not hot-swap a running ROM. Update the pinned payload and framework
-  together in a compatible ROM/OTA build.
-
-## ⭐ Credits
-
-[DexKit](https://luckypray.org/DexKit/en/): a high-performance dex runtime parsing library.
-
-[Morphe](https://morphe.software): Transform Your Android Apps.
-
-[ReVanced](https://revanced.app): Continuing the legacy of Vanced at
-[revanced.app](https://revanced.app).
-
-[Zalo Patch](https://github.com/amarinne/zalo-patch): Zalo customization module for LSPosed.
-
-## ❤️ Special Thanks
-
-- **[Nguyen Trong Hieu](https://t.me/trangkyanh17)**: for sponsoring and supporting the project
-  from day one.
-- **Allen Chang**: for testing and reporting issues to improve the Facebook patch code.
-- **[FiorenMas](https://github.com/FiorenMas/)**: for bringing SexAlloy to non-root devices.
-
-## License
-
-GPL-3.0-only. See [LICENSE](LICENSE). Upstream NexAlloy and NexAlloy-XES are also distributed
-under GPL-3.0; their respective copyright remains with their authors and contributors.
+The NothingsVN adapter is GPL-3.0-only. Upstream APK, native libraries, legacy API
+shim and libxposed dependencies retain their own licenses. This source repository
+does not redistribute their binary artifacts; obtain and validate them separately.
+See [NOTICE.md](NOTICE.md).

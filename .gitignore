@@ -4,5 +4,6 @@
 .idea/
 controller-app/.gradle/
 controller-app/app/build/
+controller-app/build/
 controller-app/local.properties
 **/__pycache__/
